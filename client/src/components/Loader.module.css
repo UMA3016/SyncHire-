@@ -1,0 +1,77 @@
+/* ═══════════════════════════════════════
+   Loader — Premium SVG Spinner
+   ═══════════════════════════════════════ */
+
+.loaderContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  min-height: 200px;
+  width: 100%;
+}
+
+.spinnerWrapper {
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+
+/* Pulsing background ring */
+.pulseRing {
+  position: absolute;
+  top: 0;
+  left: 0;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Spinning foreground arc */
+.spinner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  animation: spin 1s linear infinite;
+}
+
+.message {
+  margin: 20px 0 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: #64748b;
+  letter-spacing: 0.3px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* ── Keyframes ── */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

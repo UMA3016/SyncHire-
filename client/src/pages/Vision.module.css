@@ -1,0 +1,208 @@
+.visionContainer {
+  padding-top: 80px;
+  min-height: 100vh;
+  background: radial-gradient(circle at top right, #f0fdfa, #ffffff);
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ─── Hero Section ─── */
+.heroSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 20px;
+  perspective: 1000px;
+}
+
+.heroContent {
+  flex: 1;
+  max-width: 600px;
+}
+
+.heroTitle {
+  font-size: 4rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #008080, #0f172a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.heroSubtitle {
+  font-size: 1.25rem;
+  color: #475569;
+  line-height: 1.6;
+}
+
+/* ─── 3D Floating Cube ─── */
+.floatingCubeContainer {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 800px;
+}
+
+.floatingCube {
+  width: 200px;
+  height: 200px;
+  position: relative;
+  transform-style: preserve-3d;
+  animation: rotateCube 15s infinite linear;
+}
+
+@keyframes rotateCube {
+  0% { transform: rotateX(0deg) rotateY(0deg); }
+  100% { transform: rotateX(360deg) rotateY(360deg); }
+}
+
+.cubeFace {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: rgba(0, 128, 128, 0.1);
+  border: 2px solid rgba(0, 128, 128, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #008080;
+  backdrop-filter: blur(4px);
+  box-shadow: inset 0 0 20px rgba(0, 128, 128, 0.2);
+}
+
+.front  { transform: translateZ(100px); }
+.back   { transform: rotateY(180deg) translateZ(100px); }
+.right  { transform: rotateY(90deg) translateZ(100px); }
+.left   { transform: rotateY(-90deg) translateZ(100px); }
+.top    { transform: rotateX(90deg) translateZ(100px); }
+.bottom { transform: rotateX(-90deg) translateZ(100px); }
+
+/* ─── 3D Perspective Grid ─── */
+.detailsSection {
+  padding: 60px 20px;
+  background: #f8fafc;
+}
+
+.perspectiveGrid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 40px;
+  perspective: 1200px;
+}
+
+.visionCard {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.5s;
+  transform-style: preserve-3d;
+  transform: rotateX(10deg) translateZ(0);
+}
+
+.cardHover {
+  transform: rotateX(0deg) translateY(-10px) translateZ(50px);
+  box-shadow: 0 25px 50px rgba(0, 128, 128, 0.15);
+  border-bottom: 4px solid #008080;
+}
+
+.cardIcon {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  transform: translateZ(30px);
+}
+
+.visionCard h2 {
+  font-size: 1.5rem;
+  color: #1e293b;
+  margin-bottom: 15px;
+  transform: translateZ(20px);
+}
+
+.visionCard p {
+  color: #64748b;
+  line-height: 1.6;
+  transform: translateZ(10px);
+}
+
+/* ─── CTA Section & 3D Glowing Button ─── */
+.ctaSection {
+  padding: 100px 20px;
+  text-align: center;
+}
+
+.ctaWrapper h2 {
+  font-size: 2.5rem;
+  color: #0f172a;
+  margin-bottom: 40px;
+}
+
+.glowButton {
+  position: relative;
+  background: linear-gradient(135deg, #008080, #005a5a);
+  border: none;
+  border-radius: 50px;
+  padding: 20px 50px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: white;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 10px 20px rgba(0, 128, 128, 0.3), inset 0 2px 0 rgba(255, 255, 255, 0.2);
+}
+
+.glowButton:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 20px 40px rgba(0, 128, 128, 0.4), inset 0 2px 0 rgba(255, 255, 255, 0.3);
+}
+
+.glowButton:active {
+  transform: translateY(2px) scale(0.98);
+}
+
+.glowEffect {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  background: linear-gradient(45deg, #008080, #38bdf8, #008080);
+  border-radius: 50px;
+  z-index: -1;
+  filter: blur(15px);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.glowButton:hover .glowEffect {
+  opacity: 0.8;
+  animation: pulseGlow 2s linear infinite;
+}
+
+@keyframes pulseGlow {
+  0% { filter: blur(15px); }
+  50% { filter: blur(25px); }
+  100% { filter: blur(15px); }
+}
+
+@media (max-width: 768px) {
+  .heroSection {
+    flex-direction: column;
+    text-align: center;
+  }
+  .floatingCubeContainer {
+    margin-top: 50px;
+  }
+  .visionCard {
+    transform: none;
+  }
+}

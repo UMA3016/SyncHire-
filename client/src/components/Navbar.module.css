@@ -1,0 +1,731 @@
+/* ═══════════════════════════════════════════════════════
+   Navbar.module.css — 3D Emerald Teal Glassmorphic Navbar
+   ═══════════════════════════════════════════════════════ */
+
+/* ─── Keyframes ─── */
+@keyframes popDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes underlineGrow {
+  0% {
+    transform: scaleX(0);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+/* ─── Base Navbar ─── */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.navContainer {
+  max-width: 1240px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* ─── Brand ─── */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.brand:hover {
+  transform: scale(1.04);
+}
+
+.brandLogo {
+  width: 28px;
+  height: 28px;
+  line-height: 1;
+}
+
+.brandIcon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.brandText {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #008080;
+  background: linear-gradient(135deg, #008080 0%, #005a5a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Hamburger (mobile) ─── */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  padding: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+  z-index: 1010;
+}
+
+.hamburger:hover {
+  background: rgba(0, 128, 128, 0.08);
+}
+
+.hamburgerLine {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: #334155;
+  border-radius: 2px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform-origin: center;
+}
+
+.hamburgerActive .hamburgerLine:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.hamburgerActive .hamburgerLine:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.hamburgerActive .hamburgerLine:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ─── Nav Links (shared) ─── */
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  justify-content: center;
+}
+
+/* ─── Public Links (anchor links) ─── */
+.publicLink {
+  position: relative;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #475569;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: color 0.25s ease, background 0.25s ease;
+  white-space: nowrap;
+}
+
+.publicLink::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 16px;
+  right: 16px;
+  height: 2px;
+  background: #008080;
+  border-radius: 1px;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.publicLink:hover {
+  color: #008080;
+  background: rgba(0, 128, 128, 0.05);
+}
+
+.publicLink:hover::after {
+  transform: scaleX(1);
+}
+
+/* ─── Nav Items (authenticated links) ─── */
+.navItem {
+  position: relative;
+  padding: 8px 18px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #475569;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: color 0.25s ease, background 0.25s ease;
+  white-space: nowrap;
+}
+
+.navItem::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 18px;
+  right: 18px;
+  height: 2.5px;
+  background: linear-gradient(90deg, #008080, #00a3a3);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.navItem:hover {
+  color: #008080;
+  background: rgba(0, 128, 128, 0.06);
+}
+
+.navItem:hover::after {
+  transform: scaleX(1);
+}
+
+.navItemActive {
+  color: #008080;
+  font-weight: 600;
+}
+
+.navItemActive::after {
+  transform: scaleX(1);
+  animation: underlineGrow 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* ─── Action Group (public header) ─── */
+.actionGroup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.signInLink {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #008080;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  white-space: nowrap;
+}
+
+.signInLink:hover {
+  background: rgba(0, 128, 128, 0.08);
+  color: #005a5a;
+  transform: scale(1.03);
+}
+
+.joinNowBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 24px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #008080 0%, #006d6d 100%);
+  border-radius: 50px;
+  text-decoration: none;
+  letter-spacing: 0.2px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 2px 8px rgba(0, 128, 128, 0.25);
+  white-space: nowrap;
+}
+
+.joinNowBtn:hover {
+  background: linear-gradient(135deg, #006d6d 0%, #005a5a 100%);
+  transform: translateY(-1px) scale(1.04);
+  box-shadow: 0 4px 14px rgba(0, 128, 128, 0.35);
+}
+
+.joinNowBtn:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 1px 4px rgba(0, 128, 128, 0.2);
+}
+
+/* ─── Profile Section ─── */
+.profileSection {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatarBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 0.25s ease, transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.avatarBtn:hover {
+  border-color: rgba(0, 128, 128, 0.3);
+  transform: scale(1.08);
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #008080 0%, #005a5a 100%);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  user-select: none;
+  box-shadow: 0 2px 8px rgba(0, 128, 128, 0.2);
+}
+
+/* ─── Dropdown ─── */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 240px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 8px;
+  z-index: 1020;
+  animation: popDown 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  transform-origin: top right;
+}
+
+.dropdownHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(0, 128, 128, 0.04);
+}
+
+.dropdownAvatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #008080 0%, #005a5a 100%);
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 128, 128, 0.2);
+}
+
+.dropdownInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.dropdownName {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.roleBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 50px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  width: fit-content;
+  background: rgba(0, 128, 128, 0.1);
+  color: #008080;
+}
+
+.roleBadgeCandidate {
+  background: rgba(0, 128, 128, 0.1);
+  color: #008080;
+}
+
+.roleBadgeRecruiter {
+  background: rgba(124, 58, 237, 0.1);
+  color: #7c3aed;
+}
+
+.dropdownDivider {
+  height: 1px;
+  margin: 6px 4px;
+  background: rgba(226, 232, 240, 0.7);
+}
+
+.signOutBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #64748b;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.signOutBtn:hover {
+  background: rgba(239, 68, 68, 0.08);
+  color: #ef4444;
+}
+
+.signOutIcon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Responsive Breakpoints
+   ═══════════════════════════════════════════════════════ */
+
+/* ─── ≤ 900px: Collapse into hamburger menu ─── */
+@media (max-width: 900px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .navLinks {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    padding: 12px 20px;
+    gap: 4px;
+    transform: translateY(-110%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                opacity 0.3s ease;
+    z-index: 1005;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  }
+
+  .navLinksOpen {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .publicLink,
+  .navItem {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+  }
+
+  .publicLink::after,
+  .navItem::after {
+    display: none;
+  }
+
+  .navItemActive {
+    background: rgba(0, 128, 128, 0.08);
+  }
+
+  .actionGroup {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    padding: 16px 20px;
+    gap: 10px;
+    transform: translateY(-110%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                opacity 0.3s ease;
+    z-index: 1004;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  }
+
+  .actionGroupOpen {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* When navLinks is open, push action group below it */
+  .navLinksOpen ~ .actionGroup,
+  .actionGroupOpen {
+    /* actionGroup stacks below navLinks via DOM order */
+  }
+
+  .signInLink {
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+    border-radius: 10px;
+    background: rgba(0, 128, 128, 0.06);
+  }
+
+  .joinNowBtn {
+    width: 100%;
+    text-align: center;
+    padding: 14px;
+    border-radius: 12px;
+  }
+}
+
+/* ─── ≤ 768px ─── */
+@media (max-width: 768px) {
+  .navContainer {
+    padding: 0 16px;
+  }
+
+  .brandText {
+    font-size: 1.2rem;
+  }
+
+  .dropdown {
+    min-width: 220px;
+    right: -8px;
+  }
+}
+
+/* ─── ≤ 480px ─── */
+@media (max-width: 480px) {
+  .navContainer {
+    padding: 0 12px;
+  }
+
+  .brandIcon {
+    font-size: 1.25rem;
+  }
+
+  .brandText {
+    font-size: 1.1rem;
+  }
+
+  .avatar {
+    width: 34px;
+    height: 34px;
+    font-size: 0.85rem;
+  }
+
+  .dropdown {
+    min-width: 200px;
+    right: -4px;
+    border-radius: 12px;
+    padding: 6px;
+  }
+
+  .dropdownAvatar {
+    width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
+  }
+
+  .dropdownName {
+    font-size: 0.85rem;
+  }
+
+  .roleBadge {
+    font-size: 0.65rem;
+    padding: 2px 8px;
+  }
+
+  .navLinks {
+    padding: 10px 12px;
+  }
+
+  .publicLink,
+  .navItem {
+    padding: 12px 14px;
+    font-size: 0.92rem;
+  }
+
+  .actionGroup {
+    padding: 12px;
+  }
+}
+
+/* ─── Profile Dropdown Extended ─── */
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 0.9rem;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+.dropdownItem:hover {
+  background-color: #f1f5f9;
+  color: var(--teal);
+}
+.dropdownItemIcon {
+  font-size: 1.1rem;
+}
+
+/* ─── Gatekeeper Modal ─── */
+.gatekeeperOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: popDown 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.gatekeeperModal {
+  background: white;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 25px 50px -12px rgba(0, 128, 128, 0.25);
+  position: relative;
+  text-align: center;
+}
+.gatekeeperClose {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #64748b;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.gatekeeperClose:hover {
+  color: #ef4444;
+}
+.gatekeeperTitle {
+  font-size: 1.8rem;
+  color: #0f172a;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+.gatekeeperSubtitle {
+  color: #64748b;
+  margin-bottom: 30px;
+}
+.gatekeeperOptions {
+  display: flex;
+  gap: 20px;
+}
+.gatekeeperCard {
+  flex: 1;
+  background: #f8fafc;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  padding: 30px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.gatekeeperCard:hover {
+  border-color: #008080;
+  background: #e6f2f2;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(0, 128, 128, 0.2);
+}
+.gatekeeperIcon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+.gatekeeperCard h3 {
+  font-size: 1.2rem;
+  color: #1e293b;
+  margin-bottom: 10px;
+}
+.gatekeeperCard p {
+  font-size: 0.9rem;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .gatekeeperOptions {
+    flex-direction: column;
+  }
+}

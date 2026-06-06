@@ -1,0 +1,806 @@
+/* ========================================
+   Applications.module.css
+   Recruiter Applicant Screening Hub
+   3D Emerald Teal (#008080) Theme
+   ======================================== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- Layout ---------- */
+
+.loaderWrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 100px 24px 60px;
+}
+
+/* ---------- Back Link ---------- */
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #008080;
+  text-decoration: none;
+  margin-bottom: 28px;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.backLink:hover {
+  color: #006666;
+  transform: translateX(-3px);
+}
+
+/* ---------- Header ---------- */
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+  animation: fadeInUp 0.5s ease both;
+}
+
+.headerLeft {
+  flex: 1;
+}
+
+.jobTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 8px;
+  line-height: 1.25;
+}
+
+.jobMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.metaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.88rem;
+  color: #555;
+}
+
+.metaItem svg {
+  color: #008080;
+  flex-shrink: 0;
+}
+
+.headerRight {
+  flex-shrink: 0;
+}
+
+.totalBadge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #008080 0%, #006666 100%);
+  color: #fff;
+  border-radius: 14px;
+  padding: 14px 22px;
+  min-width: 100px;
+  box-shadow: 0 4px 16px rgba(0, 128, 128, 0.25);
+}
+
+.totalCount {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.totalLabel {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+  opacity: 0.9;
+}
+
+/* ---------- Status Summary Row ---------- */
+
+.statusSummaryRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  animation: fadeInUp 0.5s ease 0.08s both;
+}
+
+.summaryChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  color: #444;
+}
+
+.summaryDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.summaryDot.statusApplied {
+  background: #3B82F6;
+}
+.summaryDot.statusShortlisted {
+  background: #F59E0B;
+}
+.summaryDot.statusInterview {
+  background: #8B5CF6;
+}
+.summaryDot.statusSelected {
+  background: #059669;
+}
+.summaryDot.statusRejected {
+  background: #DC2626;
+}
+
+.summaryLabel {
+  font-weight: 500;
+}
+
+.summaryValue {
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+/* ---------- Filter Tabs ---------- */
+
+.filterRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+  animation: fadeInUp 0.5s ease 0.12s both;
+}
+
+.filterTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 24px;
+  border: 1.5px solid #d4d4d4;
+  background: #fff;
+  color: #555;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.filterTab:hover {
+  border-color: #008080;
+  color: #008080;
+  background: rgba(0, 128, 128, 0.04);
+}
+
+.filterTabActive {
+  background: #008080;
+  color: #fff;
+  border-color: #008080;
+  box-shadow: 0 2px 10px rgba(0, 128, 128, 0.3);
+}
+
+.filterTabActive:hover {
+  background: #006e6e;
+  color: #fff;
+}
+
+.filterCount {
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  padding: 1px 8px;
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.filterTabActive .filterCount {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+/* ---------- Card Grid ---------- */
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+/* ---------- Candidate Card ---------- */
+
+.card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.03);
+  padding: 24px;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  animation: fadeInUp 0.45s ease both;
+}
+
+.card:hover {
+  box-shadow: 0 8px 28px rgba(0, 128, 128, 0.1), 0 0 0 1px rgba(0, 128, 128, 0.08);
+  transform: translateY(-2px);
+}
+
+/* -- Card Top -- */
+
+.cardTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.avatarSection {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e0f0f0;
+  flex-shrink: 0;
+}
+
+.avatarFallback {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #008080 0%, #00b3b3 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 128, 128, 0.25);
+}
+
+.nameBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.candidateName {
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.appliedDate {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+  color: #888;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.appliedDate svg {
+  color: #aaa;
+}
+
+/* -- Status Badge -- */
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  width: fit-content;
+}
+
+.statusApplied {
+  background: rgba(59, 130, 246, 0.12);
+  color: #3B82F6;
+}
+
+.statusShortlisted {
+  background: rgba(245, 158, 11, 0.12);
+  color: #d97706;
+}
+
+.statusInterview {
+  background: rgba(139, 92, 246, 0.12);
+  color: #8B5CF6;
+}
+
+.statusSelected {
+  background: rgba(5, 150, 105, 0.12);
+  color: #059669;
+}
+
+.statusRejected {
+  background: rgba(220, 38, 38, 0.12);
+  color: #DC2626;
+}
+
+/* -- Contact Row -- */
+
+.contactRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.contactItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.84rem;
+  color: #555;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.contactItem svg {
+  color: #008080;
+  flex-shrink: 0;
+}
+
+.contactItem:hover {
+  color: #008080;
+}
+
+/* -- Skills -- */
+
+.skillsSection {
+  margin-bottom: 12px;
+}
+
+.sectionLabel {
+  display: block;
+  font-size: 0.74rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #999;
+  margin-bottom: 6px;
+}
+
+.skillsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skillPill {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #e6f2f2;
+  color: #008080;
+  border-radius: 14px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.skillPill:hover {
+  background: #cce5e5;
+  transform: scale(1.04);
+}
+
+/* -- Qualifications -- */
+
+.qualSection {
+  margin-bottom: 14px;
+}
+
+.qualList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.qualItem {
+  font-size: 0.84rem;
+  color: #444;
+  line-height: 1.6;
+  padding-left: 14px;
+  position: relative;
+}
+
+.qualItem::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 9px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #008080;
+}
+
+.qualDegree {
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.qualInst {
+  color: #666;
+}
+
+.qualYear {
+  color: #999;
+  font-size: 0.8rem;
+}
+
+/* -- Card Footer -- */
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid #f0f0f0;
+  margin-top: 4px;
+}
+
+.resumeLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: #008080;
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  background: rgba(0, 128, 128, 0.06);
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.resumeLink:hover {
+  background: rgba(0, 128, 128, 0.12);
+  transform: scale(1.03);
+}
+
+.resumeLink svg {
+  flex-shrink: 0;
+}
+
+/* -- Action Buttons -- */
+
+.actionRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.actionBtnPositive {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #008080, #009999);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  box-shadow: 0 2px 8px rgba(0, 128, 128, 0.2);
+}
+
+.actionBtnPositive:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 14px rgba(0, 128, 128, 0.35);
+  background: linear-gradient(135deg, #006e6e, #008080);
+}
+
+.actionBtnPositive:active {
+  transform: scale(0.97);
+}
+
+.actionBtnReject {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border: 1.5px solid #DC2626;
+  border-radius: 8px;
+  background: transparent;
+  color: #DC2626;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.actionBtnReject:hover {
+  background: rgba(220, 38, 38, 0.06);
+  transform: scale(1.05);
+  box-shadow: 0 2px 10px rgba(220, 38, 38, 0.15);
+}
+
+.actionBtnReject:active {
+  transform: scale(0.97);
+}
+
+.updatingText {
+  font-size: 0.82rem;
+  color: #008080;
+  font-weight: 500;
+  font-style: italic;
+}
+
+/* ---------- Empty State ---------- */
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  animation: fadeInUp 0.5s ease 0.15s both;
+}
+
+.emptyIcon {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: #e6f2f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.emptyTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin: 0 0 8px;
+}
+
+.emptySubtext {
+  font-size: 0.9rem;
+  color: #888;
+  margin: 0;
+  text-align: center;
+  max-width: 340px;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .container {
+    padding: 80px 16px 40px;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .headerRight {
+    align-self: flex-start;
+  }
+
+  .totalBadge {
+    flex-direction: row;
+    gap: 8px;
+    padding: 10px 18px;
+  }
+
+  .totalCount {
+    font-size: 1.25rem;
+  }
+
+  .jobTitle {
+    font-size: 1.35rem;
+  }
+
+  .statusSummaryRow {
+    gap: 6px;
+  }
+
+  .summaryChip {
+    padding: 4px 10px;
+    font-size: 0.76rem;
+  }
+
+  .filterRow {
+    gap: 6px;
+  }
+
+  .filterTab {
+    padding: 6px 14px;
+    font-size: 0.8rem;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  .cardTop {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .cardFooter {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .actionRow {
+    width: 100%;
+  }
+
+  .actionBtnPositive,
+  .actionBtnReject {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .container {
+    padding: 100px 20px 50px;
+  }
+}
+
+/* ---------- MODAL STYLES ---------- */
+
+.modalOverlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modalContent {
+  background: white;
+  padding: 32px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modalContent h2 {
+  font-size: 1.5rem;
+  color: #0f172a;
+  margin-bottom: 8px;
+  margin-top: 0;
+}
+
+.modalContent p {
+  color: #64748b;
+  margin-bottom: 24px;
+}
+
+.modalForm .formGroup {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modalForm label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #334155;
+}
+
+.modalForm input {
+  padding: 10px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.modalForm input:focus {
+  outline: none;
+  border-color: #008080;
+  box-shadow: 0 0 0 3px rgba(0, 128, 128, 0.1);
+}
+
+.modalActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+  justify-content: flex-end;
+}
+
+.btnSecondary {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: white;
+  color: #475569;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btnSecondary:hover {
+  background: #f1f5f9;
+}
+
+.btnPrimary {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  background: #008080;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btnPrimary:hover {
+  background: #005a5a;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

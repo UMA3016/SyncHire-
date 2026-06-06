@@ -1,0 +1,180 @@
+/* ═══════════════════════════════════════
+   Footer — Professional Dark Footer
+   ═══════════════════════════════════════ */
+
+.footer {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 0;
+  margin-top: auto;
+}
+
+.container {
+  max-width: 1128px;
+  margin: 0 auto;
+  padding: 48px 24px 0;
+}
+
+/* ── Grid Layout ── */
+.grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 40px;
+  padding-bottom: 40px;
+}
+
+/* ── Column ── */
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.brandIcon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.brandText {
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+}
+
+.description {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #94a3b8;
+  margin: 0;
+  max-width: 300px;
+}
+
+.columnTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 16px;
+  letter-spacing: 0.3px;
+}
+
+/* ── Links ── */
+.linkList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.link {
+  font-size: 14px;
+  color: #94a3b8;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  display: inline-block;
+  position: relative;
+}
+
+.link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 1px;
+  background: #008080;
+  transition: width 0.25s ease;
+}
+
+.link:hover {
+  color: #ffffff;
+}
+
+.link:hover::after {
+  width: 100%;
+}
+
+/* ── Bottom Bar ── */
+.bottomBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+  border-top: 1px solid #334155;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.copyright {
+  margin: 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.bottomLinks {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bottomLink {
+  font-size: 13px;
+  color: #64748b;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.bottomLink:hover {
+  color: #e2e8f0;
+}
+
+.bottomDot {
+  color: #475569;
+  font-size: 13px;
+}
+
+/* ═══════════════════════════════════════
+   Responsive Breakpoints
+   ═══════════════════════════════════════ */
+
+/* Tablet — 2 columns */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  .container {
+    padding: 40px 20px 0;
+  }
+
+  .description {
+    max-width: 100%;
+  }
+}
+
+/* Mobile — 1 column */
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .container {
+    padding: 32px 16px 0;
+  }
+
+  .bottomBar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

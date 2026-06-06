@@ -1,0 +1,67 @@
+.container {
+  min-height: calc(100vh - 64px - 200px);
+  padding: 100px 24px 60px;
+  background-color: #F8FAFC;
+  display: flex;
+  justify-content: center;
+}
+
+.content {
+  max-width: 800px;
+  width: 100%;
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.iconContainer {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-size: 32px;
+  color: #1E293B;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.subtitle {
+  color: #64748B;
+  font-size: 16px;
+}
+
+.emptyState {
+  background: white;
+  border-radius: 16px;
+  padding: 60px 32px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.bellIcon {
+  font-size: 56px;
+  margin-bottom: 16px;
+  opacity: 0.8;
+}
+
+.emptyState h3 {
+  font-size: 20px;
+  color: #1E293B;
+  margin-bottom: 12px;
+}
+
+.emptyState p {
+  color: #64748B;
+  max-width: 400px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

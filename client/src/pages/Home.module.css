@@ -1,0 +1,317 @@
+.main {
+  min-height: 100vh;
+  padding-top: 80px;
+  background: #f8fafc;
+  overflow: hidden;
+  position: relative;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Background Animations */
+.bgDecorations {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.floatingCircle {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.4;
+  animation: float 20s infinite alternate;
+}
+
+.circle1 {
+  width: 400px;
+  height: 400px;
+  background: #008080;
+  top: -100px;
+  left: -100px;
+}
+
+.circle2 {
+  width: 300px;
+  height: 300px;
+  background: #38bdf8;
+  bottom: 10%;
+  right: -50px;
+  animation-delay: -5s;
+}
+
+.circle3 {
+  width: 250px;
+  height: 250px;
+  background: #0ea5e9;
+  top: 40%;
+  left: 30%;
+  animation-delay: -10s;
+}
+
+@keyframes float {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(50px, 50px) scale(1.1); }
+  100% { transform: translate(-50px, 100px) scale(0.9); }
+}
+
+/* Hero Section */
+.heroSection {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.heroHeader {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.heroLogo {
+  display: inline-flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.logoImage {
+  width: 48px;
+  height: 48px;
+  filter: drop-shadow(0 4px 10px rgba(0, 128, 128, 0.2));
+}
+
+.logoText {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  background: linear-gradient(135deg, #008080, #0f172a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.heroHeadline {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 20px;
+}
+
+.heroTagline {
+  font-size: 1.2rem;
+  color: #64748b;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Split Container */
+.splitContainer {
+  display: flex;
+  gap: 30px;
+  height: 500px;
+  perspective: 1200px;
+}
+
+.splitPanel {
+  flex: 1;
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transform-style: preserve-3d;
+  background: white;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.splitPanel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.05) 100%);
+  z-index: 1;
+}
+
+.candidatePanel {
+  transform: rotateY(5deg) translateZ(0);
+}
+
+.recruiterPanel {
+  transform: rotateY(-5deg) translateZ(0);
+}
+
+.panelActive {
+  flex: 1.2;
+  transform: rotateY(0deg) translateZ(30px) scale(1.02);
+  box-shadow: 0 30px 60px rgba(0, 128, 128, 0.2);
+}
+
+.panelInactive {
+  flex: 0.8;
+  opacity: 0.7;
+  transform: rotateY(0deg) translateZ(-20px) scale(0.95);
+}
+
+.panelContent {
+  position: relative;
+  z-index: 2;
+  padding: 50px 40px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.icon3d {
+  font-size: 5rem;
+  margin-bottom: 20px;
+  transition: transform 0.5s;
+  transform: translateZ(40px);
+}
+
+.splitPanel:hover .icon3d {
+  transform: translateZ(60px) scale(1.1);
+}
+
+.panelTitle {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #008080;
+  margin-bottom: 15px;
+  font-weight: 700;
+  transform: translateZ(30px);
+}
+
+.panelHeading {
+  font-size: 2.2rem;
+  color: #1e293b;
+  margin-bottom: 20px;
+  transform: translateZ(25px);
+}
+
+.panelDescription {
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  transform: translateZ(20px);
+}
+
+.actionBtn, .actionBtnRecruiter {
+  padding: 15px 30px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  transform: translateZ(35px);
+}
+
+.actionBtn {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.actionBtnRecruiter {
+  background: #008080;
+  color: white;
+  box-shadow: 0 10px 20px rgba(0, 128, 128, 0.3);
+}
+
+.splitPanel:hover .actionBtn {
+  background: #e2e8f0;
+}
+
+.splitPanel:hover .actionBtnRecruiter {
+  background: #005a5a;
+}
+
+/* Platform Overview */
+.platformOverview {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 100px auto;
+  padding: 0 20px;
+}
+
+.overviewHeader {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.overviewHeader h2 {
+  font-size: 2.5rem;
+  color: #0f172a;
+  margin-bottom: 15px;
+}
+
+.overviewHeader p {
+  color: #64748b;
+  font-size: 1.2rem;
+}
+
+.overviewGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  perspective: 1000px;
+}
+
+.overviewCard {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: transform 0.4s, box-shadow 0.4s;
+  transform-style: preserve-3d;
+}
+
+.overviewCard:hover {
+  transform: translateY(-10px) rotateX(5deg);
+  box-shadow: 0 20px 40px rgba(0, 128, 128, 0.15);
+}
+
+.cardIcon {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.overviewCard h3 {
+  font-size: 1.4rem;
+  color: #1e293b;
+  margin-bottom: 15px;
+}
+
+.overviewCard p {
+  color: #64748b;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .splitContainer {
+    flex-direction: column;
+    height: auto;
+  }
+  .splitPanel {
+    transform: none !important;
+  }
+  .panelActive {
+    transform: translateY(-5px) !important;
+  }
+  .panelInactive {
+    opacity: 1;
+  }
+}

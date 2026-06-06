@@ -1,0 +1,264 @@
+.container {
+  padding-top: 60px;
+  min-height: calc(100vh - 60px);
+  padding-bottom: 60px;
+  background: var(--bg);
+}
+
+.company, .location, .postedDate, .deadlineDate {
+  font-size: 0.95rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.deadlineDate {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.expiredWarning {
+  background: #fef2f2;
+  color: #dc2626;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  margin-bottom: 20px;
+  font-weight: 600;
+  text-align: center;
+  border: 1px solid #fecaca;
+}
+
+.loaderContainer {
+  height: calc(100vh - 60px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 60px;
+}
+
+.headerBanner {
+  height: 160px;
+  background: linear-gradient(to right, var(--teal-dark), var(--teal));
+  position: relative;
+  margin-bottom: -80px;
+}
+
+.contentWrapper {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  position: relative;
+  z-index: 10;
+}
+
+@media (max-width: 768px) {
+  .contentWrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mainCol {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+}
+
+.jobHeader {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.companyLogo {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-md);
+  background: var(--mint);
+  color: var(--teal-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 800;
+  box-shadow: var(--shadow-sm);
+}
+
+.titleArea {
+  flex: 1;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.metaRow {
+  display: flex;
+  gap: 16px;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.company {
+  font-weight: 600;
+  color: var(--teal-dark);
+}
+
+.badges {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.badgeType, .badgeSalary {
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.badgeType {
+  background: var(--mint);
+  color: var(--teal-dark);
+}
+
+.badgeSalary {
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+.descriptionSection h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.descriptionText p {
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: 16px;
+}
+
+.sideCol {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.actionCard {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btnPrimary, .btnSecondary, .btnDanger {
+  width: 100%;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 1rem;
+  text-align: center;
+  transition: var(--transition);
+  display: inline-block;
+}
+
+.btnPrimary {
+  background: var(--teal);
+  color: white;
+}
+
+.btnPrimary:hover {
+  background: var(--teal-deep);
+  transform: scale(0.98);
+}
+
+.btnSecondary {
+  background: transparent;
+  border: 1px solid var(--teal);
+  color: var(--teal);
+}
+
+.btnSecondary:hover {
+  background: var(--mint-light);
+}
+
+.btnDanger {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border: 1px solid transparent;
+}
+
+.btnDanger:hover {
+  background: var(--danger);
+  color: white;
+}
+
+.pulseGlow {
+  animation: pulseGlow 2s infinite;
+}
+
+.applyForm {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--teal);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.applyForm h3 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  transition: var(--transition);
+}
+
+.input:focus {
+  border-color: var(--teal);
+  box-shadow: var(--mint-ring);
+}
+
+.fileLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.fileInput {
+  border: 1px dashed var(--border);
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  width: 100%;
+}

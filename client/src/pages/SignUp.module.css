@@ -1,0 +1,253 @@
+.signupContainer {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #f8fafc 0%, #e6f2f2 100%);
+}
+
+.formCard {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 128, 128, 0.08);
+  padding: 48px;
+  width: 100%;
+  max-width: 480px;
+  transition: all 0.3s ease;
+}
+
+.formCard:hover {
+  box-shadow: 0 24px 48px rgba(0, 128, 128, 0.12);
+}
+
+.formCard.shake {
+  animation: shake 0.6s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.header h2 {
+  margin: 0 0 8px 0;
+  color: #1e293b;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.header p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Role Selector */
+.roleSelector {
+  margin-bottom: 28px;
+}
+
+.roleSelector label {
+  display: block;
+  margin-bottom: 12px;
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.roleButtons {
+  display: flex;
+  gap: 12px;
+}
+
+.roleBtn {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid #e2e8f0;
+  background: white;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.roleBtn:hover {
+  border-color: #cbd5e1;
+  color: #1e293b;
+}
+
+.roleBtn.activeRole {
+  background: linear-gradient(135deg, #008080 0%, #006666 100%);
+  border-color: #008080;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 128, 128, 0.3);
+}
+
+/* Form Group */
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 8px;
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1e293b;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: #008080;
+  box-shadow: 0 0 0 3px rgba(0, 128, 128, 0.1);
+}
+
+.formGroup input::placeholder {
+  color: #cbd5e1;
+}
+
+/* Submit Button */
+.submitBtn {
+  width: 100%;
+  padding: 14px 20px;
+  margin-top: 8px;
+  background: linear-gradient(135deg, #008080 0%, #006666 100%);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+}
+
+.submitBtn:hover:not(:disabled) {
+  box-shadow: 0 8px 20px rgba(0, 128, 128, 0.4);
+  transform: translateY(-2px);
+}
+
+.submitBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* OTP Container */
+.otpContainer {
+  display: flex;
+  gap: 12px;
+  margin: 32px 0;
+  justify-content: center;
+}
+
+.otpInput {
+  width: 50px;
+  height: 50px;
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  color: #1e293b;
+  transition: all 0.3s ease;
+}
+
+.otpInput:focus {
+  outline: none;
+  border-color: #008080;
+  box-shadow: 0 0 0 3px rgba(0, 128, 128, 0.1);
+}
+
+/* Back Button */
+.backBtn {
+  width: 100%;
+  padding: 12px 20px;
+  margin-top: 16px;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.backBtn:hover {
+  border-color: #008080;
+  color: #008080;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.footer p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.footer a {
+  color: #008080;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.footer a:hover {
+  color: #006666;
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .signupContainer {
+    padding: 20px 16px;
+  }
+
+  .formCard {
+    padding: 32px 24px;
+  }
+
+  .header h2 {
+    font-size: 24px;
+  }
+
+  .otpContainer {
+    gap: 8px;
+  }
+
+  .otpInput {
+    width: 45px;
+    height: 45px;
+    font-size: 18px;
+  }
+}
