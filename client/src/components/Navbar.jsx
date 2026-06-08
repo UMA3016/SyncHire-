@@ -208,7 +208,7 @@ const Navbar = () => {
         <div className={styles.gatekeeperOverlay} onClick={closeGatekeeper}>
           <div className={styles.gatekeeperModal} onClick={e => e.stopPropagation()}>
             <button className={styles.gatekeeperClose} onClick={closeGatekeeper}>×</button>
-            <h2 className={styles.gatekeeperTitle}>Welcome to MJP</h2>
+            <h2 className={styles.gatekeeperTitle}>Welcome to SyncHire</h2>
             <p className={styles.gatekeeperSubtitle}>Please select your workspace to continue.</p>
             
             <div className={styles.gatekeeperOptions}>

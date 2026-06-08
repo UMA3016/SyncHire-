@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../context/AuthContext';
-import { getAllJobs, createJob, updateJob, deleteJob, loadDemoData } from '../assets/services/jobService';
+import { getAllJobs, createJob, updateJob, deleteJob } from '../assets/services/jobService';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import Loader from '../components/Loader';
@@ -152,23 +152,6 @@ const RecruiterDashboard = () => {
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginTop: '16px' }}>
               <button className={styles.emptyActionBtn} onClick={openCreateModal}>
                 Create Posting
-              </button>
-              <button 
-                className={styles.createBtn} 
-                style={{ background: '#334155', border: 'none' }}
-                onClick={async () => {
-                  try {
-                    setLoading(true);
-                    await loadDemoData();
-                    toast.success('Demo screening environment loaded!');
-                    fetchRecruiterJobs();
-                  } catch(err) {
-                    toast.error('Failed to load demo data');
-                    setLoading(false);
-                  }
-                }}
-              >
-                🪄 Load Demo Screening
               </button>
             </div>
           </div>

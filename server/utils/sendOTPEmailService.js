@@ -27,9 +27,9 @@ const sendOTPEmail = async (toEmail, otpCode) => {
     console.log('✅ Gmail SMTP connection verified');
 
     const mailOptions = {
-      from: `"Mini Job Portal" <${process.env.EMAIL_USER}>`,
+      from: `"SyncHire" <${process.env.EMAIL_USER}>`,
       to: toEmail,
-      subject: 'Mini Job Portal – Your Verification Code',
+      subject: 'SyncHire – Your Verification Code',
       html: `
 <!DOCTYPE html>
 <html lang="en">
@@ -42,7 +42,7 @@ const sendOTPEmail = async (toEmail, otpCode) => {
           <td style="background:linear-gradient(135deg,#008080,#006666);padding:32px 24px;text-align:center;">
             <div style="font-size:28px;margin-bottom:6px;">💼</div>
             <h1 style="margin:0;color:#ffffff;font-size:22px;font-weight:700;letter-spacing:0.5px;">
-              Mini Job Portal
+              SyncHire
             </h1>
           </td>
         </tr>
@@ -65,7 +65,7 @@ const sendOTPEmail = async (toEmail, otpCode) => {
         <tr>
           <td style="background:#f8fafa;padding:16px 24px;text-align:center;border-top:1px solid #e8f0f0;">
             <p style="margin:0;color:#aaa;font-size:11px;">
-              &copy; ${new Date().getFullYear()} Mini Job Portal
+              &copy; ${new Date().getFullYear()} SyncHire
             </p>
           </td>
         </tr>

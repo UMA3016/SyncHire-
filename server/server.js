@@ -27,7 +27,7 @@ app.use('/api/applications', require('./routes/applicationRoutes'));
 
 // Health-check endpoint
 app.get('/', (_req, res) => {
-  res.json({ message: 'Mini Job Portal API is running' });
+  res.json({ message: 'SyncHire API is running' });
 });
 
 // --------------- Error Handling Middleware ---------------

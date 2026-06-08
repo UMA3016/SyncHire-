@@ -10,10 +10,10 @@ const Footer = () => {
           <div className={styles.column}>
             <div className={styles.brand}>
               <span className={styles.brandIcon}>💼</span>
-              <span className={styles.brandText}>MJP</span>
+              <span className={styles.brandText}>SyncHire</span>
             </div>
             <p className={styles.description}>
-              Mini Job Portal connects talented candidates with top recruiters.
+              SyncHire connects talented candidates with top recruiters.
               Find your dream job or hire the perfect candidate — all in one
               streamlined platform.
             </p>
@@ -108,7 +108,7 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="mailto:support@mjp.com" className={styles.link}>
+                <a href="mailto:support@synchire.com" className={styles.link}>
                   ✉ Contact Us
                 </a>
               </li>
@@ -119,7 +119,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className={styles.bottomBar}>
           <p className={styles.copyright}>
-            © {new Date().getFullYear()} MJP. All rights reserved.
+            © {new Date().getFullYear()} SyncHire. All rights reserved.
           </p>
           <div className={styles.bottomLinks}>
             <Link to="/" className={styles.bottomLink}>

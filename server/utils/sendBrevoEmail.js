@@ -16,13 +16,13 @@ const sendOTPEmail = async (toEmail, otpCode) => {
   const sendSmtpEmail = new Brevo.SendSmtpEmail();
 
   sendSmtpEmail.sender = {
-    name: process.env.SENDER_NAME || 'Mini Job Portal',
+    name: process.env.SENDER_NAME || 'SyncHire',
     email: process.env.SENDER_EMAIL,
   };
 
   sendSmtpEmail.to = [{ email: toEmail }];
 
-  sendSmtpEmail.subject = 'Mini Job Portal – Your Verification Code';
+  sendSmtpEmail.subject = 'SyncHire – Your Verification Code';
 
   sendSmtpEmail.htmlContent = `
 <!DOCTYPE html>
@@ -38,7 +38,7 @@ const sendOTPEmail = async (toEmail, otpCode) => {
           <td style="background:linear-gradient(135deg,#008080,#006666);padding:32px 24px;text-align:center;">
             <div style="font-size:28px;margin-bottom:6px;">💼</div>
             <h1 style="margin:0;color:#ffffff;font-size:22px;font-weight:700;letter-spacing:0.5px;">
-              Mini Job Portal
+              SyncHire
             </h1>
           </td>
         </tr>
@@ -71,7 +71,7 @@ const sendOTPEmail = async (toEmail, otpCode) => {
         <tr>
           <td style="background:#f8fafa;padding:16px 24px;text-align:center;border-top:1px solid #e8f0f0;">
             <p style="margin:0;color:#aaa;font-size:11px;">
-              &copy; ${new Date().getFullYear()} Mini Job Portal &bull; Powered by Brevo
+              &copy; ${new Date().getFullYear()} SyncHire &bull; Powered by Brevo
             </p>
           </td>
         </tr>

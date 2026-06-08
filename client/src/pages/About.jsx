@@ -59,7 +59,8 @@ const About = () => {
               <div className={styles.cardIcon}>💡</div>
               <h2>Our Story</h2>
               <p>
-                Born out of the frustration of broken hiring portals, Mini Job Portal was designed from the ground up to prioritize user experience, modern aesthetics, and seamless data flow.
+                Born out of the frustration of broken hiring portals, SyncHire 
+                was designed from the ground up to prioritize user experience, modern aesthetics, and seamless data flow.
               </p>
             </div>
 
