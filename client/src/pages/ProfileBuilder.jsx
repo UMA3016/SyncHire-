@@ -30,6 +30,7 @@ const ProfileBuilder = () => {
 
   const [resume, setResume] = useState(null);
   const [dragActive, setDragActive] = useState(false);
+  const [errors, setErrors] = useState({});
 
   // Step 1: Avatar Handlers
   const handleAvatarChange = (e) => {
@@ -54,6 +55,25 @@ const ProfileBuilder = () => {
 
   const removeSkill = (skillToRemove) => {
     setSkills(skills.filter(s => s !== skillToRemove));
+  };
+
+  const handleNext = () => {
+    const newErrors = {};
+    if (step === 2) {
+      if (!academics.degree.trim()) newErrors.degree = "Degree is required";
+      if (!academics.year.trim()) newErrors.year = "Graduation year is required";
+      if (!academics.institution.trim()) newErrors.institution = "Institution is required";
+    } else if (step === 3) {
+      if (skills.length === 0) newErrors.skills = "Please add at least one skill";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    
+    setErrors({});
+    setStep(step + 1);
   };
 
   // Step 4: Resume Dropzone Handlers
@@ -85,9 +105,10 @@ const ProfileBuilder = () => {
   // Final Submission
   const handleSubmit = async () => {
     if (!resume) {
-      toast.error('Resume is mandatory to complete profile.');
+      setErrors({ resume: 'Resume is mandatory to complete profile.' });
       return;
     }
+    setErrors({});
 
     setLoading(true);
     try {
@@ -164,23 +185,26 @@ const ProfileBuilder = () => {
                 <div className={styles.formGroup}>
                   <label className={styles.inputLabel}>Highest Degree</label>
                   <input 
-                    type="text" className={styles.input} placeholder="e.g. B.Tech Computer Science"
-                    value={academics.degree} onChange={e => setAcademics({...academics, degree: e.target.value})}
+                    type="text" className={`${styles.input} ${errors.degree ? styles.inputError : ''}`} placeholder="e.g. B.Tech Computer Science"
+                    value={academics.degree} onChange={e => { setAcademics({...academics, degree: e.target.value}); if(errors.degree) setErrors({...errors, degree: ''}); }}
                   />
+                  {errors.degree && <span className={styles.errorText}>{errors.degree}</span>}
                 </div>
                 <div className={styles.formGroup}>
                   <label className={styles.inputLabel}>Graduation Year</label>
                   <input 
-                    type="text" className={styles.input} placeholder="2025"
-                    value={academics.year} onChange={e => setAcademics({...academics, year: e.target.value})}
+                    type="text" className={`${styles.input} ${errors.year ? styles.inputError : ''}`} placeholder="2025"
+                    value={academics.year} onChange={e => { setAcademics({...academics, year: e.target.value}); if(errors.year) setErrors({...errors, year: ''}); }}
                   />
+                  {errors.year && <span className={styles.errorText}>{errors.year}</span>}
                 </div>
                 <div className={`${styles.formGroup} ${styles.fullWidth}`}>
                   <label className={styles.inputLabel}>Institution / College Name</label>
                   <input 
-                    type="text" className={styles.input} placeholder="Indian Institute of Technology"
-                    value={academics.institution} onChange={e => setAcademics({...academics, institution: e.target.value})}
+                    type="text" className={`${styles.input} ${errors.institution ? styles.inputError : ''}`} placeholder="Indian Institute of Technology"
+                    value={academics.institution} onChange={e => { setAcademics({...academics, institution: e.target.value}); if(errors.institution) setErrors({...errors, institution: ''}); }}
                   />
+                  {errors.institution && <span className={styles.errorText}>{errors.institution}</span>}
                 </div>
               </div>
             </div>
@@ -205,10 +229,11 @@ const ProfileBuilder = () => {
                     className={styles.skillInput} 
                     placeholder="Add a skill (e.g. React)..."
                     value={skillInput}
-                    onChange={e => setSkillInput(e.target.value)}
+                    onChange={e => { setSkillInput(e.target.value); if(errors.skills) setErrors({...errors, skills: ''}); }}
                     onKeyDown={handleSkillKeyDown}
                   />
                 </div>
+                {errors.skills && <span className={styles.errorText} style={{marginLeft: '10px', marginTop: '-5px', marginBottom: '10px'}}>{errors.skills}</span>}
               </div>
             </div>
           )}
@@ -231,6 +256,7 @@ const ProfileBuilder = () => {
                   {resume ? 'Click to replace file' : 'Supports .pdf, .doc, .docx'}
                 </p>
               </label>
+              {errors.resume && <span className={styles.errorText} style={{textAlign: 'center', marginTop: '16px'}}>{errors.resume}</span>}
             </div>
           )}
 
@@ -243,7 +269,7 @@ const ProfileBuilder = () => {
             ) : <div />}
             
             {step < 4 ? (
-              <button className={styles.btnNext} onClick={() => setStep(step + 1)}>
+              <button className={styles.btnNext} onClick={handleNext}>
                 Continue →
               </button>
             ) : (

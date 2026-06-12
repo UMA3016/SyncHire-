@@ -24,7 +24,25 @@ const getJobs = async (req, res, next) => {
       filter.type = type;
     }
 
+    // By default, public query should not return archived jobs
+    filter.status = { $ne: 'Archived' };
+
     const jobs = await Job.find(filter).sort({ createdAt: -1 });
+    res.status(200).json(jobs);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get all jobs for logged-in recruiter (includes Archived)
+// @route   GET /api/jobs/recruiter/me
+// @access  Private (Recruiter)
+const getRecruiterJobs = async (req, res, next) => {
+  try {
+    if (req.user.role !== 'recruiter') {
+      return res.status(403).json({ message: 'Only recruiters can fetch these jobs' });
+    }
+    const jobs = await Job.find({ recruiterId: req.user._id }).sort({ createdAt: -1 });
     res.status(200).json(jobs);
   } catch (error) {
     next(error);
@@ -93,13 +111,13 @@ const updateJob = async (req, res, next) => {
   }
 };
 
-// @desc    Delete a job by ID (and its associated applications)
+// @desc    Archive a job by ID (Soft Delete)
 // @route   DELETE /api/jobs/:id
 // @access  Private (Recruiter)
 const deleteJob = async (req, res, next) => {
   try {
     if (req.user.role !== 'recruiter') {
-      return res.status(403).json({ message: 'Only recruiters can delete jobs' });
+      return res.status(403).json({ message: 'Only recruiters can archive jobs' });
     }
 
     const job = await Job.findById(req.params.id);
@@ -108,15 +126,44 @@ const deleteJob = async (req, res, next) => {
     }
 
     if (job.recruiterId.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: 'Not authorized to delete this job' });
+      return res.status(403).json({ message: 'Not authorized to archive this job' });
     }
 
-    await job.deleteOne();
+    // Soft delete: change status to Archived and set archivedAt for TTL expiration
+    job.status = 'Archived';
+    job.archivedAt = new Date();
+    await job.save();
 
-    // Remove all applications tied to this job
-    await Application.deleteMany({ jobId: req.params.id });
+    res.status(200).json({ message: 'Job archived successfully' });
+  } catch (error) {
+    next(error);
+  }
+};
 
-    res.status(200).json({ message: 'Job and associated applications deleted' });
+// @desc    Restore an archived job
+// @route   PUT /api/jobs/:id/restore
+// @access  Private (Recruiter)
+const restoreJob = async (req, res, next) => {
+  try {
+    if (req.user.role !== 'recruiter') {
+      return res.status(403).json({ message: 'Only recruiters can restore jobs' });
+    }
+
+    const job = await Job.findById(req.params.id);
+    if (!job) {
+      return res.status(404).json({ message: 'Job not found' });
+    }
+
+    if (job.recruiterId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Not authorized to restore this job' });
+    }
+
+    // Restore: change status back to Active and unset archivedAt
+    job.status = 'Active';
+    job.archivedAt = undefined;
+    await job.save();
+
+    res.status(200).json({ success: true, data: job, message: 'Job restored successfully' });
   } catch (error) {
     next(error);
   }
@@ -230,10 +277,12 @@ const loadDemoData = async (req, res, next) => {
 
 module.exports = {
   getJobs,
+  getRecruiterJobs,
   getJobById,
   createJob,
   updateJob,
   deleteJob,
+  restoreJob,
   applyToJob,
   loadDemoData,
 };

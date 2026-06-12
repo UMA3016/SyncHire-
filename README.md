@@ -1,8 +1,8 @@
 # SyncHire
 
-**SyncHire** is a modern, responsive, and fully-featured Job Portal application built on the MERN stack (MongoDB, Express.js, React, Node.js). It provides a seamless experience for two primary types of users: **Candidates** and **Recruiters**. 
+**SyncHire** is a modern, responsive, and fully-featured Job Portal application built on the MERN stack (MongoDB, Express.js, React, Node.js). It provides a seamless experience for three primary types of users: **Candidates**, **Recruiters**, and **System Administrators**. 
 
-With an emphasis on a premium, glassmorphic UI, robust role-based routing, and a clean applicant tracking pipeline, SyncHire streamlines the hiring and job-seeking process.
+With an emphasis on a premium, glassmorphic UI, robust role-based routing, real-time communications, and a clean applicant tracking pipeline, SyncHire streamlines the entire hiring and job-seeking process.
 
 ## ✨ Key Features
 
@@ -10,21 +10,28 @@ With an emphasis on a premium, glassmorphic UI, robust role-based routing, and a
 * **Explore Jobs:** Browse available job postings with real-time filtering (Full-time, Part-time, Remote, Internship) and text search.
 * **Profile Builder:** Upload your resume, add your qualifications, skills, and set up your profile picture.
 * **My Pipeline:** A visual, interactive timeline tracking the progress of your job applications (Applied → Shortlisted → Interview Scheduled → Selected).
-* **Job Sharing:** Quickly copy and share job links with your network.
+* **Real-time Chat:** Communicate directly with recruiters regarding your applications and share files seamlessly.
+* **Instant Notifications:** Receive real-time socket-based notifications when your application status changes or when a recruiter sends you a message.
 
 ### For Recruiters
 * **Active Portfolios (Dashboard):** Manage all your job postings in one place.
-* **Demo Environment:** New recruiters can instantly load a fully-populated mock screening pipeline with jobs and applicants to test the system.
 * **Screening Hub:** View all applicants for a specific job and update their statuses dynamically.
-* **Interview Scheduling:** Directly schedule interviews (Date, Time, Meeting Link) which automatically reflects on the candidate's visual pipeline.
+* **AI Resume Parsing:** Automatically extract candidate skills directly from uploaded PDF resumes.
+* **Real-time Candidate Chat:** Open a direct communication channel with candidates right from the Screening Hub.
 * **Resume Access:** Instantly view and download candidate resumes.
 
-### General Features
-* **State Management & UI Feedback:** Comprehensive loading spinners, user-friendly toast error messages, and beautifully designed empty states when no data (jobs/applications) exists.
-* **Form Validations:** Robust frontend and backend validation ensuring no empty fields, valid email formats, and secure data entry.
-* **Secure Authentication:** JWT-based login with role-based access control.
+### For Administrators
+* **Admin Dashboard:** A dedicated control panel featuring an attractive 3D isometric UI.
+* **System Overview:** View real-time statistics on total users, jobs, and applications across the platform.
+* **User Management:** Monitor and ban users. SyncHire implements robust cascading deletes to automatically clean up orphaned data (jobs and applications) when a user is removed.
+* **Global Job Monitoring:** View all active and archived job postings across the entire platform.
+
+### General Platform Features
+* **Real-time WebSockets Engine:** Built-in Socket.io integration powering instant messaging and live push notifications.
+* **Secure File Uploads:** Cross-platform optimized file handling (Multer) for resumes and profile pictures.
+* **Secure Authentication:** JWT-based login with strict role-based access control (RBAC).
 * **OTP Email Verification:** Signup and password recovery flows powered by secure one-time passwords (sent via Brevo API).
-* **Modern Design:** Deep teal brand colors, glassmorphic navigation, micro-animations, and responsive layouts across all devices.
+* **Modern Design:** Deep teal brand colors, glassmorphic navigation, 3D assets, micro-animations, and responsive layouts across all devices.
 
 ---
 
@@ -35,40 +42,49 @@ The project is organized into a mono-repo structure with a decoupled client and 
 ```text
 SyncHire/
 ├── client/                     # Frontend React Application (Vite)
-│   ├── public/                 # Static assets (favicons, etc.)
+│   ├── public/                 # Static assets
 │   └── src/                    # React Source Code
-│       ├── assets/             # Images and API service definitions (jobService, etc.)
-│       ├── components/         # Reusable UI components (Navbar, Footer, Loader)
-│       ├── context/            # React Context (AuthContext for global user state)
-│       ├── pages/              # Application Pages (Login, Pipeline, Dashboard, Jobs, etc.)
-│       ├── routes/             # React Router configuration (AppRoutes, ProtectedRoute)
-│       ├── App.jsx             # Root component containing routing logic
+│       ├── assets/             # Images (admin_dashboard_3d.png) & API services (axios instances)
+│       ├── components/         # Reusable UI (Navbar, ChatWindow, Footer, Loader, etc.)
+│       ├── context/            # React Context (AuthContext)
+│       ├── pages/              # Core Application Pages 
+│       │   ├── AdminDashboard.jsx
+│       │   ├── Applications.jsx      # Recruiter Screening Hub
+│       │   ├── CandidatePipeline.jsx # Candidate Tracking
+│       │   ├── ChatWindow.jsx        # Socket.io Chat Interface
+│       │   └── ... (Auth, Jobs, Profile pages)
+│       ├── routes/             # Routing configs (AppRoutes, ProtectedRoute)
+│       ├── App.jsx             # Root routing wrapper
 │       ├── main.jsx            # React entry point
-│       └── index.css           # Global styles, animations, and design system variables
+│       └── index.css           # Global CSS variables & animations
 │
 ├── server/                     # Backend Node.js / Express API
-│   ├── config/                 # Database connection configurations (db.js)
-│   ├── controllers/            # Route logic (authController, jobController, applicationController)
-│   ├── middleware/             # Custom Express middlewares (auth, file upload)
-│   ├── models/                 # MongoDB Mongoose schemas (User, Job, Application)
-│   ├── routes/                 # API routing definitions
-│   ├── scripts/                # Utility scripts (seeding database, loading mock data)
-│   ├── uploads/                # Local storage for user resumes and profile pictures
-│   ├── utils/                  # Helper utilities (sendOTPEmailService)
-│   ├── .env                    # Environment variables (Mongo URI, JWT Secret, Brevo API key)
-│   └── server.js               # Express application entry point
+│   ├── config/                 # Database configurations (db.js)
+│   ├── controllers/            # Core business logic
+│   │   ├── adminController.js
+│   │   ├── applicationController.js
+│   │   ├── authController.js
+│   │   ├── chatController.js
+│   │   └── jobController.js
+│   ├── middleware/             # Custom middlewares (authMiddleware, uploadMiddleware)
+│   ├── models/                 # Mongoose schemas (Application, ChatRoom, Job, Message, Notification, User)
+│   ├── routes/                 # Express API routing definitions
+│   ├── scripts/                # Utility scripts (seed jobs/users)
+│   ├── uploads/                # Local storage for resumes & profile pictures
+│   ├── utils/                  # Utilities (resumeParserService.js, sendStatusEmail.js)
+│   ├── seedAdmin.js            # Script to seed the superadmin account
+│   ├── .env                    # Environment variables (Mongo URI, Brevo API key, JWT Secret)
+│   └── server.js               # Express app entry & Socket.io WebSocket engine
 │
 └── README.md                   # Application documentation
 ```
-
-*(Note: Unused legacy directories like `hooks`, `layouts`, and `utils` from the client have been strictly pruned for code cleanliness).*
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-* **Node.js** (v16+ recommended)
+* **Node.js** (v20+ recommended)
 * **MongoDB** (Local instance or MongoDB Atlas cluster)
 
 ### 1. Environment Setup
@@ -103,7 +119,7 @@ npm install
 
 Start both development servers to run the app locally.
 
-**Start the Backend (Terminal 1):**
+**Start the Backend & WebSocket Server (Terminal 1):**
 ```bash
 npm run dev
 ```
@@ -120,6 +136,6 @@ Navigate to `http://localhost:5173` in your browser to access SyncHire!
 ---
 
 ## 🛠️ Tech Stack
-* **Frontend:** React, Vite, React Router DOM, CSS Modules, Axios, React Toastify.
-* **Backend:** Node.js, Express.js, MongoDB, Mongoose, JSON Web Tokens (JWT), Bcrypt, Multer (File uploads).
+* **Frontend:** React, Vite, React Router DOM, CSS Modules, Socket.io-client, Axios, React Toastify.
+* **Backend:** Node.js, Express.js, Socket.io (WebSockets), MongoDB, Mongoose, JWT, Bcrypt, Multer, pdf-parse.
 * **Third-Party:** Brevo (Email OTP Delivery).

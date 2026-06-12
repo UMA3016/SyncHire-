@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import Loader from '../components/Loader';
+import ChatWindow from '../components/ChatWindow';
 import API from '../assets/services/api';
 import styles from './CandidatePipeline.module.css';
 
@@ -102,7 +103,7 @@ function RejectedBadge() {
   );
 }
 
-function ApplicationCard({ application, index }) {
+function ApplicationCard({ application, index, onChatClick }) {
   const stageIndex = STATUS_TO_STAGE_INDEX[application.status] ?? 0;
   const isRejected = application.status === 'Rejected';
 
@@ -126,7 +127,17 @@ function ApplicationCard({ application, index }) {
       {isRejected ? (
         <RejectedBadge />
       ) : (
-        <PipelineTimeline currentStageIndex={stageIndex} />
+        <>
+          <PipelineTimeline currentStageIndex={stageIndex} />
+          <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'flex-end' }}>
+            <button 
+              style={{ background: '#008080', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '6px' }}
+              onClick={() => onChatClick(application.applicationId)}
+            >
+              💬 Chat with Recruiter
+            </button>
+          </div>
+        </>
       )}
 
       {application.status === 'Interview Call Received' && application.interviewDate && (
@@ -176,6 +187,18 @@ export default function CandidatePipeline() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [chatAppId, setChatAppId] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const chatParam = searchParams.get('chat');
+    if (chatParam) {
+      setChatAppId(chatParam);
+      // Clean up the URL
+      searchParams.delete('chat');
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const fetchApplications = async () => {
     try {
@@ -284,12 +307,17 @@ export default function CandidatePipeline() {
                   key={app._id || idx}
                   application={app}
                   index={idx}
+                  onChatClick={(appId) => setChatAppId(appId)}
                 />
               ))}
             </div>
           </>
         )}
       </main>
+
+      {chatAppId && (
+        <ChatWindow applicationId={chatAppId} onClose={() => setChatAppId(null)} />
+      )}
 
       <Footer />
     </div>

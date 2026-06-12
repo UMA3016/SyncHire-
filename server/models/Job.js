@@ -41,8 +41,12 @@ const jobSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['Active', 'Closed'],
+      enum: ['Active', 'Closed', 'Archived'],
       default: 'Active',
+    },
+    archivedAt: {
+      type: Date,
+      expires: 2592000, // Automatically delete document 30 days after this date
     },
     applicationStartDate: {
       type: Date,

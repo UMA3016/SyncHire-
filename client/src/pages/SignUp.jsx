@@ -24,6 +24,7 @@ const SignUp = () => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
   const [shaking, setShaking] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const otpRefs = useRef([]);
 
@@ -36,36 +37,35 @@ const SignUp = () => {
   // ── Handle Registration Submission ──
   const handleSignUp = async (e) => {
     e.preventDefault();
+    const newErrors = {};
 
     if (!name.trim()) {
-      toast.error('Please enter your full name');
-      triggerShake();
-      return;
+      newErrors.name = 'Please enter your full name';
     }
 
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      toast.error('Please enter a valid email');
-      triggerShake();
-      return;
+      newErrors.email = 'Please enter a valid email address';
     }
 
     if (!phone.trim() || phone.length < 10) {
-      toast.error('Please enter a valid phone number');
-      triggerShake();
-      return;
+      newErrors.phone = 'Please enter a valid phone number';
     }
 
     if (!password || password.length < 6) {
-      toast.error('Password must be at least 6 characters');
-      triggerShake();
-      return;
+      newErrors.password = 'Password must be at least 6 characters';
     }
 
     if (password !== confirmPassword) {
-      toast.error('Passwords do not match');
+      newErrors.confirmPassword = 'Passwords do not match';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       triggerShake();
       return;
     }
+    
+    setErrors({});
 
     setLoading(true);
     try {
@@ -76,7 +76,8 @@ const SignUp = () => {
         if (otpRefs.current[0]) otpRefs.current[0].focus();
       }, 100);
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Sign up failed');
+      const errorMsg = err.response?.data?.message || 'Sign up failed';
+      setErrors({ email: errorMsg }); // Attach to email field since it's usually duplicate email
       triggerShake();
     } finally {
       setLoading(false);
@@ -120,10 +121,12 @@ const SignUp = () => {
     const otpString = otp.join('');
 
     if (otpString.length !== 6) {
-      toast.error('Please enter the complete 6-digit OTP');
+      setErrors({ otp: 'Please enter the complete 6-digit OTP' });
       triggerShake();
       return;
     }
+    
+    setErrors({});
 
     setLoading(true);
     try {
@@ -137,7 +140,8 @@ const SignUp = () => {
       toast.info('Please log in with your credentials');
       navigate('/login');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'OTP verification failed');
+      const errorMsg = err.response?.data?.message || 'OTP verification failed';
+      setErrors({ otp: errorMsg });
       triggerShake();
       setOtp(['', '', '', '', '', '']);
       if (otpRefs.current[0]) otpRefs.current[0].focus();
@@ -187,8 +191,13 @@ const SignUp = () => {
                   type="text"
                   placeholder="John Doe"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    if (errors.name) setErrors({ ...errors, name: '' });
+                  }}
+                  className={errors.name ? styles.inputError : ''}
                 />
+                {errors.name && <span className={styles.errorText}>{errors.name}</span>}
               </div>
 
               {/* Email Field */}
@@ -199,8 +208,13 @@ const SignUp = () => {
                   type="email"
                   placeholder="you@example.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (errors.email) setErrors({ ...errors, email: '' });
+                  }}
+                  className={errors.email ? styles.inputError : ''}
                 />
+                {errors.email && <span className={styles.errorText}>{errors.email}</span>}
               </div>
 
               {/* Phone Field */}
@@ -211,8 +225,13 @@ const SignUp = () => {
                   type="tel"
                   placeholder="+91 98765 43210"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                    if (errors.phone) setErrors({ ...errors, phone: '' });
+                  }}
+                  className={errors.phone ? styles.inputError : ''}
                 />
+                {errors.phone && <span className={styles.errorText}>{errors.phone}</span>}
               </div>
 
               {/* Password Field */}
@@ -223,8 +242,13 @@ const SignUp = () => {
                   type="password"
                   placeholder="At least 6 characters"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (errors.password) setErrors({ ...errors, password: '' });
+                  }}
+                  className={errors.password ? styles.inputError : ''}
                 />
+                {errors.password && <span className={styles.errorText}>{errors.password}</span>}
               </div>
 
               {/* Confirm Password Field */}
@@ -235,8 +259,13 @@ const SignUp = () => {
                   type="password"
                   placeholder="Re-enter your password"
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={(e) => {
+                    setConfirmPassword(e.target.value);
+                    if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: '' });
+                  }}
+                  className={errors.confirmPassword ? styles.inputError : ''}
                 />
+                {errors.confirmPassword && <span className={styles.errorText}>{errors.confirmPassword}</span>}
               </div>
 
               {/* Submit Button */}
@@ -269,12 +298,16 @@ const SignUp = () => {
                     type="text"
                     maxLength="1"
                     value={digit}
-                    onChange={(e) => handleOtpChange(index, e.target.value)}
+                    onChange={(e) => {
+                      handleOtpChange(index, e.target.value);
+                      if (errors.otp) setErrors({});
+                    }}
                     onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                    className={styles.otpInput}
+                    className={`${styles.otpInput} ${errors.otp ? styles.inputError : ''}`}
                   />
                 ))}
               </div>
+              {errors.otp && <span className={styles.errorText} style={{ textAlign: 'center', marginBottom: '16px' }}>{errors.otp}</span>}
 
               <button
                 type="submit"

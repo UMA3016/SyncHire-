@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { getJobById } from '../assets/services/jobService';
-import { getApplicationsByJob, updateApplicationStatus } from '../assets/services/applicationService';
+import { getApplicationsByJob, updateApplicationStatus, parseResume } from '../assets/services/applicationService';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import Loader from '../components/Loader';
+import ChatWindow from '../components/ChatWindow';
 import styles from './Applications.module.css';
 
 const STATUS_LIST = ['Applied', 'Shortlisted', 'Interview Call Received', 'Selection Confirmed', 'Rejected'];
@@ -45,6 +46,17 @@ function Applications() {
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('All');
   const [updatingId, setUpdatingId] = useState(null);
+  const [chatAppId, setChatAppId] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const chatParam = searchParams.get('chat');
+    if (chatParam) {
+      setChatAppId(chatParam);
+      searchParams.delete('chat');
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   // Interview Modal State
   const [interviewModalOpen, setInterviewModalOpen] = useState(false);
@@ -83,6 +95,27 @@ function Applications() {
       toast.success(`Status updated to "${newStatus}"`);
     } catch (err) {
       toast.error('Failed to update status.');
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const handleParseResume = async (appId) => {
+    try {
+      setUpdatingId(appId);
+      const res = await parseResume(appId);
+      if (res.success) {
+        if (res.extractedSkills.length > 0) {
+          toast.success(`Resume parsed! Found ${res.extractedSkills.length} new skills.`);
+        } else {
+          toast.info('No new skills found in resume.');
+        }
+        setApplications(prev => prev.map(app => 
+          app._id === appId ? { ...app, skills: res.allSkills } : app
+        ));
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to parse resume');
     } finally {
       setUpdatingId(null);
     }
@@ -356,15 +389,31 @@ function Applications() {
 
                 <div className={styles.cardFooter}>
                   {app.resumePath && (
-                    <a
-                      href={`http://localhost:5000/${app.resumePath}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.resumeLink}
-                    >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
-                      Download Resume
-                    </a>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                      <a
+                        href={`http://localhost:5000/${app.resumePath}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.resumeLink}
+                      >
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
+                        Download Resume
+                      </a>
+                      <button 
+                        className={styles.actionBtnPositive} 
+                        style={{ padding: '6px 12px', fontSize: '12px' }}
+                        onClick={() => handleParseResume(app._id)}
+                      >
+                        ✨ Parse Skills
+                      </button>
+                      <button 
+                        className={styles.actionBtnPositive} 
+                        style={{ padding: '6px 12px', fontSize: '12px', background: '#3B82F6' }}
+                        onClick={() => setChatAppId(app._id)}
+                      >
+                        💬 Chat
+                      </button>
+                    </div>
                   )}
                   <div className={styles.actionRow}>
                     {renderActionButtons(app)}
@@ -426,6 +475,10 @@ function Applications() {
             </form>
           </div>
         </div>
+      )}
+
+      {chatAppId && (
+        <ChatWindow applicationId={chatAppId} onClose={() => setChatAppId(null)} />
       )}
 
       <Footer />

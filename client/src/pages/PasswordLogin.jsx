@@ -16,6 +16,7 @@ const PasswordLogin = () => {
   const [loading, setLoading] = useState(false);
   const [shaking, setShaking] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const triggerShake = () => {
     setShaking(true);
@@ -24,18 +25,23 @@ const PasswordLogin = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    const newErrors = {};
 
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      toast.error('Please enter a valid email');
-      triggerShake();
-      return;
+      newErrors.email = 'Please enter a valid email address';
     }
 
     if (!password) {
-      toast.error('Please enter your password');
+      newErrors.password = 'Please enter your password';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       triggerShake();
       return;
     }
+    
+    setErrors({});
 
     setLoading(true);
     try {
@@ -46,13 +52,16 @@ const PasswordLogin = () => {
       contextLogin(response.token, response.user);
       
       // Redirect based on role
-      if (response.user.role === 'recruiter') {
+      if (response.user.role === 'admin') {
+        navigate('/admin-dashboard');
+      } else if (response.user.role === 'recruiter') {
         navigate('/dashboard');
       } else {
         navigate('/jobs');
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Login failed');
+      const errorMsg = err.response?.data?.message || 'Login failed';
+      setErrors({ password: errorMsg });
       triggerShake();
     } finally {
       setLoading(false);
@@ -78,8 +87,13 @@ const PasswordLogin = () => {
                 type="email"
                 placeholder="you@example.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (errors.email) setErrors({ ...errors, email: '' });
+                }}
+                className={errors.email ? styles.inputError : ''}
               />
+              {errors.email && <span className={styles.errorText}>{errors.email}</span>}
             </div>
 
             {/* Password Field */}
@@ -96,7 +110,11 @@ const PasswordLogin = () => {
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Enter your password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (errors.password) setErrors({ ...errors, password: '' });
+                  }}
+                  className={errors.password ? styles.inputError : ''}
                 />
                 <button
                   type="button"
@@ -106,6 +124,7 @@ const PasswordLogin = () => {
                   {showPassword ? '👁️' : '👁️‍🗨️'}
                 </button>
               </div>
+              {errors.password && <span className={styles.errorText}>{errors.password}</span>}
             </div>
 
             {/* Submit Button */}

@@ -14,9 +14,8 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: 40px;
+  margin-bottom: 24px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #e2e8f0;
 }
 
 .pageTitle {
@@ -60,6 +59,37 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 24px;
+}
+
+/* Tabs */
+.tabsContainer {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 32px;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 16px;
+}
+
+.tabBtn {
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.tabBtn:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.tabBtn.activeTab {
+  background: #008080;
+  color: white;
 }
 
 .jobCard {
@@ -195,6 +225,22 @@
 
 .actionDeleteBtn:hover {
   background: #fef2f2;
+}
+
+.actionRestoreBtn {
+  background: none;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  color: #10b981;
+}
+
+.actionRestoreBtn:hover {
+  background: #d1fae5;
 }
 
 /* Empty State */
@@ -379,4 +425,21 @@
     flex-direction: column;
     gap: 0;
   }
+}
+
+/* Inline Errors */
+.errorText {
+  color: #DC2626;
+  font-size: 13px;
+  margin: 6px 0 0 0;
+  display: block;
+}
+
+.inputError {
+  border-color: #DC2626 !important;
+  background-color: #FEF2F2;
+}
+
+.inputError:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1) !important;
 }

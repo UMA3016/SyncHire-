@@ -22,6 +22,11 @@ export const updateApplicationStatus = async (applicationId, status, interviewDe
   return response.data;
 };
 
+export const parseResume = async (applicationId) => {
+  const response = await api.post(`/applications/${applicationId}/parse-resume`);
+  return response.data;
+};
+
 /** GET /api/applications/my-pipeline — Candidate: get own pipeline */
 export const getMyPipeline = async () => {
   const response = await api.get('/applications/my-pipeline');

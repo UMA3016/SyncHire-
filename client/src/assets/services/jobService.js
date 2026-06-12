@@ -16,6 +16,15 @@ export const getAllJobs = async (search = '', type = '') => {
 };
 
 /**
+ * Fetch all jobs for the logged-in recruiter (includes archived).
+ * @returns {Promise<Array>} List of job objects
+ */
+export const getRecruiterJobs = async () => {
+  const response = await API.get('/jobs/recruiter/me');
+  return response.data;
+};
+
+/**
  * Fetch a single job by its ID.
  * @param {string} id - Job ID
  * @returns {Promise<Object>} Job object
@@ -57,12 +66,22 @@ export const deleteJob = async (id) => {
 };
 
 /**
+ * Restore an archived job posting.
+ * @param {string} id - Job ID
+ * @returns {Promise<Object>} Restore confirmation
+ */
+export const restoreJob = async (id) => {
+  const response = await API.put(`/jobs/${id}/restore`);
+  return response.data;
+};
+
+/**
  * Apply to a job posting.
  * @param {string} jobId - Job ID
  * @returns {Promise<Object>} Application confirmation
  */
 export const applyToJob = async (jobId) => {
-  const response = await API.post(`/jobs/${jobId}/apply`);
+  const response = await API.post('/applications', { jobId });
   return response.data;
 };
 

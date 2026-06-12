@@ -19,6 +19,8 @@ import Plans from '../pages/Plans';
 import About from '../pages/About';
 import Settings from '../pages/Settings';
 import Notifications from '../pages/Notifications';
+import AdminDashboard from '../pages/AdminDashboard';
+import AdminProfile from '../pages/AdminProfile';
 import ProtectedRoute from './ProtectedRoute';
 
 const AppRoutes = () => {
@@ -118,7 +120,7 @@ const AppRoutes = () => {
       <Route 
         path="/settings" 
         element={
-          <ProtectedRoute allowedRoles={['candidate', 'recruiter']}>
+          <ProtectedRoute allowedRoles={['candidate', 'recruiter', 'admin']}>
             <Settings />
           </ProtectedRoute>
         } 
@@ -128,6 +130,24 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['candidate', 'recruiter']}>
             <Notifications />
+          </ProtectedRoute>
+        } 
+      />
+      
+      {/* Admin Protected Routes */}
+      <Route 
+        path="/admin-dashboard" 
+        element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/admin-profile" 
+        element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <AdminProfile />
           </ProtectedRoute>
         } 
       />

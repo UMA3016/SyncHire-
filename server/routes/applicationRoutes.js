@@ -5,6 +5,7 @@ const {
   getApplicationsByJob,
   updateApplicationStatus,
   getMyPipeline,
+  parseResume
 } = require('../controllers/applicationController');
 
 const authMiddleware = require('../middleware/authMiddleware');
@@ -14,7 +15,8 @@ const upload = require('../middleware/uploadMiddleware');
 router.route('/').post(authMiddleware, applyForJob);
 
 // Candidate: get own pipeline
-router.route('/my-pipeline').get(authMiddleware, getMyPipeline);
+router.get('/my-pipeline', authMiddleware, getMyPipeline);
+router.post('/:id/parse-resume', authMiddleware, parseResume);
 
 // Recruiter: get applications for a job
 router.route('/job/:jobId').get(authMiddleware, getApplicationsByJob);

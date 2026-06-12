@@ -1,6 +1,8 @@
 const Application = require('../models/Application');
 const Job = require('../models/Job');
 const User = require('../models/User');
+const sendStatusEmail = require('../utils/sendStatusEmail');
+const { parseResumeForSkills } = require('../utils/resumeParserService');
 
 // @desc    Submit an application for a job (One-Click)
 // @route   POST /api/applications
@@ -53,6 +55,9 @@ const applyForJob = async (req, res, next) => {
       status: 'Applied',
     });
     await user.save();
+
+    // Fire and forget email notification
+    sendStatusEmail(user.email, user.name, job.title, job.company, 'Applied').catch(err => console.error(err));
 
     res.status(201).json({ success: true, data: application });
   } catch (error) {
@@ -131,6 +136,16 @@ const updateApplicationStatus = async (req, res, next) => {
       { $set: updateFields }
     );
 
+    // Fire and forget email notification
+    sendStatusEmail(
+      application.email,
+      application.name,
+      job.title,
+      job.company,
+      status,
+      { interviewDate, interviewTime, interviewLink }
+    ).catch(err => console.error(err));
+
     res.status(200).json({ success: true, data: application });
   } catch (error) {
     next(error);
@@ -156,9 +171,64 @@ const getMyPipeline = async (req, res, next) => {
   }
 };
 
+// @desc    Parse resume to extract skills
+// @route   POST /api/applications/:id/parse-resume
+// @access  Private (Recruiter)
+const parseResume = async (req, res, next) => {
+  try {
+    if (req.user.role !== 'recruiter') {
+      return res.status(403).json({ message: 'Only recruiters can parse resumes' });
+    }
+
+    const { id } = req.params;
+    const application = await Application.findById(id);
+    
+    if (!application) {
+      return res.status(404).json({ message: 'Application not found' });
+    }
+
+    if (!application.resumePath) {
+      return res.status(400).json({ message: 'No resume file found for this application' });
+    }
+
+    // Parse the PDF
+    const extractedSkills = await parseResumeForSkills(application.resumePath);
+
+    // Filter out skills that are already in the application
+    const existingSkillsLower = application.skills.map(s => s.toLowerCase());
+    const newSkills = extractedSkills.filter(s => !existingSkillsLower.includes(s.toLowerCase()));
+
+    if (newSkills.length > 0) {
+      application.skills = [...application.skills, ...newSkills];
+      await application.save();
+      
+      // Update the User's master profile
+      const user = await User.findById(application.candidateId);
+      if (user) {
+        const userExistingSkillsLower = user.skills.map(s => s.toLowerCase());
+        const userNewSkills = newSkills.filter(s => !userExistingSkillsLower.includes(s.toLowerCase()));
+        if (userNewSkills.length > 0) {
+          user.skills = [...user.skills, ...userNewSkills];
+          await user.save();
+        }
+      }
+    }
+
+    res.status(200).json({ 
+      success: true, 
+      message: 'Resume parsed successfully',
+      extractedSkills: newSkills,
+      allSkills: application.skills
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   applyForJob,
   getApplicationsByJob,
   updateApplicationStatus,
   getMyPipeline,
+  parseResume
 };

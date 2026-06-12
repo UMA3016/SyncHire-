@@ -331,10 +331,10 @@ exports.updateProfile = async (req, res) => {
 
     if (req.files) {
       if (req.files.profilePicture) {
-        user.profilePicture = req.files.profilePicture[0].path;
+        user.profilePicture = req.files.profilePicture[0].path.replace(/\\/g, '/');
       }
       if (req.files.resumeFile) {
-        user.resumeFile = req.files.resumeFile[0].path;
+        user.resumeFile = req.files.resumeFile[0].path.replace(/\\/g, '/');
       }
     }
 

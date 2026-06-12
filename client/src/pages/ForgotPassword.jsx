@@ -20,6 +20,7 @@ const ForgotPassword = () => {
   const [loading, setLoading] = useState(false);
   const [shaking, setShaking] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const otpRefs = useRef([]);
 
@@ -34,10 +35,12 @@ const ForgotPassword = () => {
     e.preventDefault();
 
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      toast.error('Please enter a valid email');
+      setErrors({ email: 'Please enter a valid email address' });
       triggerShake();
       return;
     }
+    
+    setErrors({});
 
     setLoading(true);
     try {
@@ -61,10 +64,12 @@ const ForgotPassword = () => {
     const otpString = otp.join('');
 
     if (otpString.length !== 6) {
-      toast.error('Please enter the complete 6-digit OTP');
+      setErrors({ otp: 'Please enter the complete 6-digit OTP' });
       triggerShake();
       return;
     }
+    
+    setErrors({});
 
     setLoading(true);
     try {
@@ -82,24 +87,23 @@ const ForgotPassword = () => {
   const handleResetPassword = async (e) => {
     e.preventDefault();
     const otpString = otp.join('');
+    const newErrors = {};
 
-    if (!newPassword) {
-      toast.error('Please enter your new password');
-      triggerShake();
-      return;
-    }
-
-    if (newPassword.length < 6) {
-      toast.error('Password must be at least 6 characters');
-      triggerShake();
-      return;
+    if (!newPassword || newPassword.length < 6) {
+      newErrors.newPassword = 'Password must be at least 6 characters';
     }
 
     if (newPassword !== confirmPassword) {
-      toast.error('Passwords do not match');
+      newErrors.confirmPassword = 'Passwords do not match';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       triggerShake();
       return;
     }
+    
+    setErrors({});
 
     setLoading(true);
     try {
@@ -165,8 +169,13 @@ const ForgotPassword = () => {
                     type="email"
                     placeholder="you@example.com"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (errors.email) setErrors({ ...errors, email: '' });
+                    }}
+                    className={errors.email ? styles.inputError : ''}
                   />
+                  {errors.email && <span className={styles.errorText}>{errors.email}</span>}
                 </div>
 
                 <button
@@ -196,12 +205,16 @@ const ForgotPassword = () => {
                       type="text"
                       maxLength="1"
                       value={digit}
-                      onChange={(e) => handleOtpChange(index, e.target.value)}
+                      onChange={(e) => {
+                        handleOtpChange(index, e.target.value);
+                        if (errors.otp) setErrors({});
+                      }}
                       onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                      className={styles.otpInput}
+                      className={`${styles.otpInput} ${errors.otp ? styles.inputError : ''}`}
                     />
                   ))}
                 </div>
+                {errors.otp && <span className={styles.errorText} style={{ textAlign: 'center', marginBottom: '16px' }}>{errors.otp}</span>}
 
                 <button
                   type="submit"
@@ -241,7 +254,11 @@ const ForgotPassword = () => {
                       type={showPassword ? 'text' : 'password'}
                       placeholder="At least 6 characters"
                       value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
+                      onChange={(e) => {
+                        setNewPassword(e.target.value);
+                        if (errors.newPassword) setErrors({ ...errors, newPassword: '' });
+                      }}
+                      className={errors.newPassword ? styles.inputError : ''}
                     />
                     <button
                       type="button"
@@ -251,6 +268,7 @@ const ForgotPassword = () => {
                       {showPassword ? '👁️' : '👁️‍🗨️'}
                     </button>
                   </div>
+                  {errors.newPassword && <span className={styles.errorText}>{errors.newPassword}</span>}
                 </div>
 
                 <div className={styles.formGroup}>
@@ -261,9 +279,14 @@ const ForgotPassword = () => {
                       type={showPassword ? 'text' : 'password'}
                       placeholder="Re-enter your password"
                       value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      onChange={(e) => {
+                        setConfirmPassword(e.target.value);
+                        if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: '' });
+                      }}
+                      className={errors.confirmPassword ? styles.inputError : ''}
                     />
                   </div>
+                  {errors.confirmPassword && <span className={styles.errorText}>{errors.confirmPassword}</span>}
                 </div>
 
                 <button

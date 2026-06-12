@@ -1,20 +1,32 @@
 import { useState, useEffect, useRef, useContext } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { io } from 'socket.io-client';
 import { AuthContext } from '../context/AuthContext';
+import { getNotifications, markAsRead, markAllAsRead } from '../assets/services/notificationService';
 import styles from './Navbar.module.css';
+
+const SOCKET_SERVER_URL = 'http://localhost:5000';
 
 const Navbar = () => {
   const { user, logout, loading } = useContext(AuthContext);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [notifDropdownOpen, setNotifDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showGatekeeper, setShowGatekeeper] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  
   const dropdownRef = useRef(null);
+  const notifRef = useRef(null);
+  const socketRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setDropdownOpen(false);
+      }
+      if (notifRef.current && !notifRef.current.contains(e.target)) {
+        setNotifDropdownOpen(false);
       }
     };
     const handleOpenGatekeeper = () => {
@@ -32,10 +44,31 @@ const Navbar = () => {
   useEffect(() => {
     setMobileMenuOpen(false);
     setDropdownOpen(false);
+    setNotifDropdownOpen(false);
+
+    if (user) {
+      // Fetch initial notifications
+      getNotifications().then(data => {
+        if (Array.isArray(data)) setNotifications(data);
+      }).catch(console.error);
+
+      // Initialize Socket
+      socketRef.current = io(SOCKET_SERVER_URL);
+      socketRef.current.emit('join_user_room', user.id || user._id);
+      
+      socketRef.current.on('receive_notification', (notif) => {
+        setNotifications(prev => [notif, ...prev]);
+      });
+
+      return () => {
+        if (socketRef.current) socketRef.current.disconnect();
+      };
+    }
   }, [user]);
 
   const handleSignOut = () => {
     setDropdownOpen(false);
+    setNotifDropdownOpen(false);
     setMobileMenuOpen(false);
     logout();
     navigate('/');
@@ -43,6 +76,12 @@ const Navbar = () => {
 
   const toggleDropdown = () => {
     setDropdownOpen((prev) => !prev);
+    setNotifDropdownOpen(false);
+  };
+
+  const toggleNotifDropdown = () => {
+    setNotifDropdownOpen((prev) => !prev);
+    setDropdownOpen(false);
   };
 
   const toggleMobileMenu = () => {
@@ -77,8 +116,66 @@ const Navbar = () => {
   const getRoleBadgeLabel = (role) => {
     if (role === 'candidate') return 'Candidate';
     if (role === 'recruiter') return 'Recruiter';
+    if (role === 'admin') return 'Admin';
     return role;
   };
+
+  const unreadCount = notifications.filter(n => !n.isRead).length;
+
+  const handleNotificationClick = async (notif) => {
+    if (!notif.isRead) {
+      try {
+        await markAsRead(notif._id);
+        setNotifications(prev => prev.map(n => n._id === notif._id ? { ...n, isRead: true } : n));
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    setNotifDropdownOpen(false);
+    
+    // Redirect based on role and notification context
+    if (user.role === 'recruiter' && notif.jobId) {
+      navigate(`/applications/${notif.jobId}?chat=${notif.applicationId}`);
+    } else {
+      navigate(`/pipeline?chat=${notif.applicationId}`);
+    }
+  };
+
+  const renderNotificationsDropdown = () => (
+    <div className={styles.notifDropdown}>
+      <div className={styles.notifHeader}>
+        <h4>Notifications</h4>
+        {unreadCount > 0 && (
+          <button className={styles.markAllReadBtn} onClick={async () => {
+            await markAllAsRead();
+            setNotifications(prev => prev.map(n => ({...n, isRead: true})));
+          }}>Mark all read</button>
+        )}
+      </div>
+      <div className={styles.notifList}>
+        {notifications.length === 0 ? (
+          <div className={styles.emptyNotifs}>No new notifications</div>
+        ) : (
+          notifications.map(notif => (
+            <div 
+              key={notif._id} 
+              className={`${styles.notifItem} ${notif.isRead ? styles.notifRead : styles.notifUnread}`}
+              onClick={() => handleNotificationClick(notif)}
+            >
+              <div className={styles.notifAvatar}>{getInitial(notif.senderId?.name || 'U')}</div>
+              <div className={styles.notifContent}>
+                <p className={styles.notifMessage}>
+                  <span className={styles.notifSender}>{notif.senderId?.name || 'Someone'}</span>
+                  : {notif.message}
+                </p>
+                <span className={styles.notifTime}>{new Date(notif.createdAt).toLocaleDateString()}</span>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
 
   const renderProfileDropdown = () => (
     <div className={styles.dropdown}>
@@ -92,11 +189,12 @@ const Navbar = () => {
         </div>
       </div>
       <div className={styles.dropdownDivider} />
-      <button className={styles.dropdownItem} onClick={() => { setDropdownOpen(false); navigate(user.role === 'recruiter' ? '/recruiter-profile' : '/profile-builder'); }}>
+      <button className={styles.dropdownItem} onClick={() => { 
+        setDropdownOpen(false); 
+        if (user.role === 'admin') navigate('/admin-profile');
+        else navigate(user.role === 'recruiter' ? '/recruiter-profile' : '/profile-builder'); 
+      }}>
         <span className={styles.dropdownItemIcon}>⚙️</span> Edit Profile
-      </button>
-      <button className={styles.dropdownItem} onClick={() => { setDropdownOpen(false); navigate('/notifications'); }}>
-        <span className={styles.dropdownItemIcon}>🔔</span> Notifications
       </button>
       <button className={styles.dropdownItem} onClick={() => { setDropdownOpen(false); navigate('/settings'); }}>
         <span className={styles.dropdownItemIcon}>🛠️</span> Account Settings
@@ -169,11 +267,21 @@ const Navbar = () => {
                 <NavLink to="/pipeline" className={({ isActive }) => `${styles.navItem} ${isActive ? styles.navItemActive : ''}`} onClick={closeMobileMenu}>My Pipeline</NavLink>
               </nav>
 
-              <div className={styles.profileSection} ref={dropdownRef}>
-                <button className={styles.avatarBtn} onClick={toggleDropdown} aria-label="Open profile menu" type="button">
-                  <span className={styles.avatar}>{getInitial(user.name)}</span>
-                </button>
-                {dropdownOpen && renderProfileDropdown()}
+              <div className={styles.profileControls}>
+                <div className={styles.notifSection} ref={notifRef}>
+                  <button className={styles.notifBellBtn} onClick={toggleNotifDropdown}>
+                    🔔
+                    {unreadCount > 0 && <span className={styles.notifBadge}>{unreadCount}</span>}
+                  </button>
+                  {notifDropdownOpen && renderNotificationsDropdown()}
+                </div>
+
+                <div className={styles.profileSection} ref={dropdownRef}>
+                  <button className={styles.avatarBtn} onClick={toggleDropdown} aria-label="Open profile menu" type="button">
+                    <span className={styles.avatar}>{getInitial(user.name)}</span>
+                  </button>
+                  {dropdownOpen && renderProfileDropdown()}
+                </div>
               </div>
             </>
           ) : user.role === 'recruiter' ? (
@@ -182,6 +290,30 @@ const Navbar = () => {
               <nav className={`${styles.navLinks} ${mobileMenuOpen ? styles.navLinksOpen : ''}`}>
                 <NavLink to="/create-job" className={({ isActive }) => `${styles.navItem} ${isActive ? styles.navItemActive : ''}`} onClick={closeMobileMenu}>Create Posting</NavLink>
                 <NavLink to="/dashboard" className={({ isActive }) => `${styles.navItem} ${isActive ? styles.navItemActive : ''}`} onClick={closeMobileMenu}>Active Portfolios</NavLink>
+              </nav>
+
+              <div className={styles.profileControls}>
+                <div className={styles.notifSection} ref={notifRef}>
+                  <button className={styles.notifBellBtn} onClick={toggleNotifDropdown}>
+                    🔔
+                    {unreadCount > 0 && <span className={styles.notifBadge}>{unreadCount}</span>}
+                  </button>
+                  {notifDropdownOpen && renderNotificationsDropdown()}
+                </div>
+
+                <div className={styles.profileSection} ref={dropdownRef}>
+                  <button className={styles.avatarBtn} onClick={toggleDropdown} aria-label="Open profile menu" type="button">
+                    <span className={styles.avatar}>{getInitial(user.name)}</span>
+                  </button>
+                  {dropdownOpen && renderProfileDropdown()}
+                </div>
+              </div>
+            </>
+          ) : user.role === 'admin' ? (
+            /* ─── ADMIN HEADER ─── */
+            <>
+              <nav className={`${styles.navLinks} ${mobileMenuOpen ? styles.navLinksOpen : ''}`}>
+                <NavLink to="/admin-dashboard" className={({ isActive }) => `${styles.navItem} ${isActive ? styles.navItemActive : ''}`} onClick={closeMobileMenu}>Admin Panel</NavLink>
               </nav>
 
               <div className={styles.profileSection} ref={dropdownRef}>

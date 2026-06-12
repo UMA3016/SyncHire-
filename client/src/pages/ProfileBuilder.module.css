@@ -356,3 +356,20 @@
     grid-column: span 1;
   }
 }
+
+/* Inline Errors */
+.errorText {
+  color: #DC2626;
+  font-size: 13px;
+  margin: 6px 0 0 0;
+  display: block;
+}
+
+.inputError {
+  border-color: #DC2626 !important;
+  background-color: #FEF2F2;
+}
+
+.inputError:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1) !important;
+}

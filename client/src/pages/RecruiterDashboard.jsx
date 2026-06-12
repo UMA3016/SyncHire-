@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../context/AuthContext';
-import { getAllJobs, createJob, updateJob, deleteJob } from '../assets/services/jobService';
+import { getRecruiterJobs, createJob, updateJob, deleteJob, restoreJob } from '../assets/services/jobService';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import Loader from '../components/Loader';
@@ -15,6 +15,7 @@ const RecruiterDashboard = () => {
   // Unified State Management
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('Active'); // 'Active' | 'Archived'
   
   // Modal & Form State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,15 +25,14 @@ const RecruiterDashboard = () => {
     title: '', company: '', location: '', type: 'Full-time', salary: '', description: '', applicationStartDate: '', applicationEndDate: ''
   });
   const [formLoading, setFormLoading] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
 
   // The Asynchronous Sync Fix
   const fetchRecruiterJobs = async () => {
     try {
-      const res = await getAllJobs();
-      // Since it's public and returns all jobs, we filter for the recruiter's own jobs.
+      const res = await getRecruiterJobs();
       const data = res.data || res;
-      const myJobs = Array.isArray(data) ? data.filter(j => j.recruiterId === user?.id) : [];
-      setJobs(myJobs);
+      setJobs(Array.isArray(data) ? data : []);
     } catch (err) {
       toast.error('Failed to load active postings');
     } finally {
@@ -47,6 +47,31 @@ const RecruiterDashboard = () => {
   // Handle Form Submission (Create & Edit)
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    const errors = {};
+
+    if (!formData.title.trim()) errors.title = 'Job title is required';
+    if (!formData.company.trim()) errors.company = 'Company name is required';
+    if (!formData.location.trim()) errors.location = 'Location is required';
+    if (!formData.salary.trim()) errors.salary = 'Salary range is required';
+    if (!formData.applicationStartDate) errors.applicationStartDate = 'Start date is required';
+    if (!formData.applicationEndDate) errors.applicationEndDate = 'End date is required';
+    
+    if (formData.applicationStartDate && formData.applicationEndDate) {
+      if (new Date(formData.applicationEndDate) < new Date(formData.applicationStartDate)) {
+        errors.applicationEndDate = 'End date cannot be before start date';
+      }
+    }
+
+    if (!formData.description.trim() || formData.description.length < 20) {
+      errors.description = 'Description must be at least 20 characters';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+    
+    setFormErrors({});
     setFormLoading(true);
 
     try {
@@ -71,6 +96,7 @@ const RecruiterDashboard = () => {
 
   const openCreateModal = () => {
     setFormData({ title: '', company: '', location: '', type: 'Full-time', salary: '', description: '', applicationStartDate: '', applicationEndDate: '' });
+    setFormErrors({});
     setModalMode('create');
     setIsModalOpen(true);
   };
@@ -86,6 +112,7 @@ const RecruiterDashboard = () => {
       applicationStartDate: job.applicationStartDate ? new Date(job.applicationStartDate).toISOString().split('T')[0] : '',
       applicationEndDate: job.applicationEndDate ? new Date(job.applicationEndDate).toISOString().split('T')[0] : ''
     });
+    setFormErrors({});
     setEditingJobId(job._id);
     setModalMode('edit');
     setIsModalOpen(true);
@@ -97,26 +124,39 @@ const RecruiterDashboard = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to permanently delete this job?')) {
+    if (window.confirm('Are you sure you want to archive this job? It will be moved to the Archived tab.')) {
       const card = document.getElementById(`job-card-${id}`);
       if (card) {
         card.classList.add(styles.exiting);
         setTimeout(async () => {
           try {
             await deleteJob(id);
-            setJobs(jobs.filter(job => job._id !== id));
-            toast.success('Job removed');
+            setJobs(jobs.map(job => job._id === id ? { ...job, status: 'Archived' } : job));
+            toast.success('Job archived successfully');
           } catch (err) {
-            toast.error('Deletion failed');
+            toast.error('Archiving failed');
             card.classList.remove(styles.exiting);
           }
         }, 300);
       } else {
         await deleteJob(id);
-        setJobs(jobs.filter(job => job._id !== id));
+        setJobs(jobs.map(job => job._id === id ? { ...job, status: 'Archived' } : job));
       }
     }
   };
+
+  const handleRestore = async (id) => {
+    try {
+      await restoreJob(id);
+      setJobs(jobs.map(job => job._id === id ? { ...job, status: 'Active' } : job));
+      toast.success('Job restored successfully');
+    } catch (err) {
+      toast.error('Restore failed');
+    }
+  };
+
+  // Filter jobs based on active tab
+  const displayedJobs = jobs.filter(job => activeTab === 'Active' ? job.status !== 'Archived' : job.status === 'Archived');
 
   if (loading) {
     return (
@@ -144,7 +184,22 @@ const RecruiterDashboard = () => {
           </button>
         </div>
 
-        {jobs.length === 0 ? (
+        <div className={styles.tabsContainer}>
+          <button 
+            className={`${styles.tabBtn} ${activeTab === 'Active' ? styles.activeTab : ''}`}
+            onClick={() => setActiveTab('Active')}
+          >
+            Active Postings
+          </button>
+          <button 
+            className={`${styles.tabBtn} ${activeTab === 'Archived' ? styles.activeTab : ''}`}
+            onClick={() => setActiveTab('Archived')}
+          >
+            Archived
+          </button>
+        </div>
+
+        {displayedJobs.length === 0 ? (
           <div className={styles.emptyState}>
             <div className={styles.emptyIcon}>🏢</div>
             <h3>No active portfolios</h3>
@@ -157,7 +212,7 @@ const RecruiterDashboard = () => {
           </div>
         ) : (
           <div className={styles.jobGrid}>
-            {jobs.map((job) => (
+            {displayedJobs.map((job) => (
               <div key={job._id} id={`job-card-${job._id}`} className={styles.jobCard}>
                 <div className={styles.cardMain}>
                   <div className={styles.cardHeader}>
@@ -165,11 +220,13 @@ const RecruiterDashboard = () => {
                       <h3 className={styles.jobTitle}>{job.title}</h3>
                       <p className={styles.jobCompany}>{job.company}</p>
                     </div>
-                    {new Date(job.applicationEndDate) < new Date() ? (
-                      <span className={`${styles.statusBadge} ${styles.statusBadgeExpired}`}>Expired</span>
-                    ) : (
-                      <span className={styles.statusBadge}>Active</span>
-                    )}
+                      {job.status === 'Archived' ? (
+                        <span className={`${styles.statusBadge} ${styles.statusBadgeExpired}`}>Archived</span>
+                      ) : new Date(job.applicationEndDate) < new Date() ? (
+                        <span className={`${styles.statusBadge} ${styles.statusBadgeExpired}`}>Expired</span>
+                      ) : (
+                        <span className={styles.statusBadge}>Active</span>
+                      )}
                   </div>
                   
                   <div className={styles.cardBody}>
@@ -197,20 +254,32 @@ const RecruiterDashboard = () => {
                     View Applicants
                   </button>
                   <div className={styles.actionGroup}>
-                    <button 
-                      className={styles.actionEditBtn}
-                      onClick={() => openEditModal(job)}
-                      aria-label="Edit Job"
-                    >
-                      ✏️ Edit
-                    </button>
-                    <button 
-                      className={styles.actionDeleteBtn}
-                      onClick={() => handleDelete(job._id)}
-                      aria-label="Delete Job"
-                    >
-                      🗑️ Delete
-                    </button>
+                    {job.status !== 'Archived' ? (
+                      <>
+                        <button 
+                          className={styles.actionEditBtn}
+                          onClick={() => openEditModal(job)}
+                          aria-label="Edit Job"
+                        >
+                          ✏️ Edit
+                        </button>
+                        <button 
+                          className={styles.actionDeleteBtn}
+                          onClick={() => handleDelete(job._id)}
+                          aria-label="Archive Job"
+                        >
+                          🗑️ Archive
+                        </button>
+                      </>
+                    ) : (
+                      <button 
+                        className={styles.actionRestoreBtn}
+                        onClick={() => handleRestore(job._id)}
+                        aria-label="Restore Job"
+                      >
+                        ♻️ Restore
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -233,10 +302,11 @@ const RecruiterDashboard = () => {
                   <input 
                     type="text" 
                     value={formData.title} 
-                    onChange={e => setFormData({...formData, title: e.target.value})} 
-                    required 
+                    onChange={e => { setFormData({...formData, title: e.target.value}); if(formErrors.title) setFormErrors({...formErrors, title: ''}); }} 
                     placeholder="e.g. Senior React Developer"
+                    className={formErrors.title ? styles.inputError : ''}
                   />
+                  {formErrors.title && <span className={styles.errorText}>{formErrors.title}</span>}
                 </div>
                 
                 <div className={styles.formRow}>
@@ -245,18 +315,20 @@ const RecruiterDashboard = () => {
                     <input 
                       type="text" 
                       value={formData.company} 
-                      onChange={e => setFormData({...formData, company: e.target.value})} 
-                      required 
+                      onChange={e => { setFormData({...formData, company: e.target.value}); if(formErrors.company) setFormErrors({...formErrors, company: ''}); }} 
+                      className={formErrors.company ? styles.inputError : ''}
                     />
+                    {formErrors.company && <span className={styles.errorText}>{formErrors.company}</span>}
                   </div>
                   <div className={styles.formGroup}>
                     <label>Location</label>
                     <input 
                       type="text" 
                       value={formData.location} 
-                      onChange={e => setFormData({...formData, location: e.target.value})} 
-                      required 
+                      onChange={e => { setFormData({...formData, location: e.target.value}); if(formErrors.location) setFormErrors({...formErrors, location: ''}); }} 
+                      className={formErrors.location ? styles.inputError : ''}
                     />
+                    {formErrors.location && <span className={styles.errorText}>{formErrors.location}</span>}
                   </div>
                 </div>
 
@@ -278,10 +350,11 @@ const RecruiterDashboard = () => {
                     <input 
                       type="text" 
                       value={formData.salary} 
-                      onChange={e => setFormData({...formData, salary: e.target.value})} 
+                      onChange={e => { setFormData({...formData, salary: e.target.value}); if(formErrors.salary) setFormErrors({...formErrors, salary: ''}); }} 
                       placeholder="e.g. $100k - $120k"
-                      required 
+                      className={formErrors.salary ? styles.inputError : ''}
                     />
+                    {formErrors.salary && <span className={styles.errorText}>{formErrors.salary}</span>}
                   </div>
                 </div>
 
@@ -291,18 +364,20 @@ const RecruiterDashboard = () => {
                     <input 
                       type="date" 
                       value={formData.applicationStartDate} 
-                      onChange={e => setFormData({...formData, applicationStartDate: e.target.value})} 
-                      required 
+                      onChange={e => { setFormData({...formData, applicationStartDate: e.target.value}); if(formErrors.applicationStartDate) setFormErrors({...formErrors, applicationStartDate: ''}); }} 
+                      className={formErrors.applicationStartDate ? styles.inputError : ''}
                     />
+                    {formErrors.applicationStartDate && <span className={styles.errorText}>{formErrors.applicationStartDate}</span>}
                   </div>
                   <div className={styles.formGroup}>
                     <label>End Date (Deadline)</label>
                     <input 
                       type="date" 
                       value={formData.applicationEndDate} 
-                      onChange={e => setFormData({...formData, applicationEndDate: e.target.value})} 
-                      required 
+                      onChange={e => { setFormData({...formData, applicationEndDate: e.target.value}); if(formErrors.applicationEndDate) setFormErrors({...formErrors, applicationEndDate: ''}); }} 
+                      className={formErrors.applicationEndDate ? styles.inputError : ''}
                     />
+                    {formErrors.applicationEndDate && <span className={styles.errorText}>{formErrors.applicationEndDate}</span>}
                   </div>
                 </div>
 
@@ -310,11 +385,12 @@ const RecruiterDashboard = () => {
                   <label>Description</label>
                   <textarea 
                     value={formData.description} 
-                    onChange={e => setFormData({...formData, description: e.target.value})} 
-                    required 
+                    onChange={e => { setFormData({...formData, description: e.target.value}); if(formErrors.description) setFormErrors({...formErrors, description: ''}); }} 
                     rows="5"
                     placeholder="Describe the role, responsibilities, and requirements..."
+                    className={formErrors.description ? styles.inputError : ''}
                   ></textarea>
+                  {formErrors.description && <span className={styles.errorText}>{formErrors.description}</span>}
                 </div>
 
                 <div className={styles.modalFooter}>
